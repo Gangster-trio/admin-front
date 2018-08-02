@@ -90,12 +90,6 @@ const styles = theme => ({
     height: '100%',
     width: '100%'
   },
-  // 'content-left': {
-  //   marginLeft: 0
-  // },
-  // 'content-right': {
-  //   marginRight: drawerWidth
-  // },
   mainShift: {
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,

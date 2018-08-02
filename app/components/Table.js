@@ -17,18 +17,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
-
-function getSorting (order, orderBy) {
-  return (a, b) => {
-    if (a[orderBy] > b[orderBy]) {
-      return order === 'desc' ? -1 : 1;
-    }
-    if (a[orderBy] < b[orderBy]) {
-      return order === 'desc' ? 1 : -1;
-    }
-    return 0;
-  };
-}
+import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 
 class EnhancedTableHead extends React.Component {
 
@@ -176,6 +165,30 @@ const styles = () => ({
 
 class EnhancedTable extends React.Component {
 
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    //表格标题
+    title: PropTypes.string.isRequired,
+    //表头
+    header: PropTypes.arrayOf(
+      PropTypes.shape({title: PropTypes.string, field: PropTypes.string})
+    ).isRequired,
+    //标识符,如"articleId"
+    id: PropTypes.string.isRequired,
+    data: PropTypes.arrayOf(PropTypes.object).isRequired,
+    //初始排序依据
+    orderBy: PropTypes.string.isRequired,
+    count: PropTypes.number.isRequired,
+    //页数从0开始还是从1开始
+    pageBase: PropTypes.oneOf([0, 1]).isRequired,
+    //点击条目后的回调函数
+    //传入被点击条目的id
+    clickCallback: PropTypes.func.isRequired,
+    //分页函数,要求返回一个返回data的Promise对象
+    //args(page,limit,order,orderBy)
+    pageCallback: PropTypes.func.isRequired,
+  };
+
   constructor (props) {
     super(props);
 
@@ -185,11 +198,15 @@ class EnhancedTable extends React.Component {
       selected: [],
       data: props.data,
       page: 0,
-      rowsPerPage: 5
+      rowsPerPage: 5,
+      count: props.count,
+      loading: false
     };
   }
 
   handleRequestSort = (event, property) => {
+    const {page, rowsPerPage} = this.state;
+
     const orderBy = property;
     let order = 'desc';
 
@@ -197,7 +214,15 @@ class EnhancedTable extends React.Component {
       order = 'asc';
     }
 
-    this.setState({order, orderBy});
+    this.setState({loading: true});
+    this.props.pageCallback(page, rowsPerPage, order, orderBy).then(v => {
+      this.setState({
+        data: v,
+        order: order,
+        orderBy: orderBy,
+        loading: false
+      });
+    });
   };
 
   handleSelectAllClick = (event, checked) => {
@@ -237,23 +262,42 @@ class EnhancedTable extends React.Component {
   };
 
   handleChangePage = (event, page) => {
-    this.setState({page});
+    const {rowsPerPage, order, orderBy} = this.state;
+    this.setState({loading: true});
+    this.props.pageCallback(page + this.props.pageBase, rowsPerPage, order, orderBy).then(v => {
+      this.setState({
+        data: v,
+        page: page,
+        loading: false
+      });
+    });
   };
 
   handleChangeRowsPerPage = event => {
-    this.setState({rowsPerPage: event.target.value});
+    const limit = event.target.value;
+    const {page, order, orderBy} = this.state;
+    this.setState({loading: true});
+    this.props.pageCallback(page + this.props.pageBase, limit, order, orderBy).then(v => {
+      this.setState({
+        data: v,
+        page: page,
+        rowsPerPage: limit,
+        loading: false
+      });
+    });
   };
 
   isSelected = id => this.state.selected.includes(id);
 
   render () {
     const {classes, title, id, header} = this.props;
-    const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
+    const {data, count, order, orderBy, selected, rowsPerPage, page, loading} = this.state;
     const emptyRows =
-      rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+      rowsPerPage - Math.min(rowsPerPage, count - page * rowsPerPage);
 
     return (
       <div>
+        {loading ? (<LinearProgress/>) : null}
         <EnhancedTableToolbar numSelected={selected.length} title={title}/>
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
@@ -263,14 +307,14 @@ class EnhancedTable extends React.Component {
               orderBy={orderBy}
               onSelectAllClick={this.handleSelectAllClick}
               onRequestSort={this.handleRequestSort}
-              rowCount={data.length}
+              rowCount={count}
               id={id}
               header={header}
             />
             <TableBody>
               {data
-                .sort(getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              // .sort(getSorting(order, orderBy))
+              // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((n) => {
                   const isSelected = this.isSelected(n[id]);
                   return (
@@ -313,7 +357,7 @@ class EnhancedTable extends React.Component {
         </div>
         <TablePagination
           component="div"
-          count={data.length}
+          count={count}
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{
@@ -330,15 +374,4 @@ class EnhancedTable extends React.Component {
   }
 }
 
-EnhancedTable.propTypes = {
-  classes: PropTypes.object.isRequired,
-  title: PropTypes.string,
-  header: PropTypes.arrayOf(
-    PropTypes.shape({title: PropTypes.string, field: PropTypes.string})
-  ),
-  id: PropTypes.string.isRequired,
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
-  orderBy: PropTypes.string,
-  clickCallback: PropTypes.func.isRequired
-};
 export default withStyles(styles)(EnhancedTable);

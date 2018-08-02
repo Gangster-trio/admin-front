@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getArticleList } from '../action/articleList';
+import { fetchArticlesData, getArticleList } from '../action/articleList';
 import Table from '../components/Table';
 import Tooltip from '@material-ui/core/Tooltip/Tooltip';
 import Button from '@material-ui/core/Button/Button';
@@ -10,11 +10,11 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import classNames from 'classnames';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
 import Paper from '@material-ui/core/Paper';
+import { Link } from 'react-router-dom';
 
 const styles = theme => ({
   root: {
     margin: '40px'
-    // marginTop: theme.spacing.unit * 3
   },
   fab: {
     height: '50px',
@@ -28,11 +28,9 @@ const styles = theme => ({
   tool_set: {
     position: 'absolute',
     top: '15px',
-    right: '15px'
+    right: '15px',
+    zIndex: theme.zIndex.modal
   },
-  'float_right': {
-    float: 'right'
-  }
 });
 
 class ArticleList extends React.Component {
@@ -43,13 +41,30 @@ class ArticleList extends React.Component {
       PropTypes.shape({title: PropTypes.string, field: PropTypes.string})
     ),
     articles: PropTypes.arrayOf(PropTypes.object),
+    count: PropTypes.number,
     dispatch: PropTypes.func,
     classes: PropTypes.object,
   };
 
+  constructor (props) {
+    super(props);
+    this.state = {
+      page: 1,
+      limit: 5,
+      orderBy: 'articleId',
+      order: 'asc',
+      reFetching: false,
+    };
+  }
+
+  rePage = (page, limit, order, orderBy) => {
+    return fetchArticlesData(page, limit, order, orderBy).then(v => v.articles);
+  };
+
   componentDidMount () {
     const dispatch = this.props.dispatch;
-    dispatch(getArticleList());
+    const {page, limit, order, orderBy} = this.state;
+    dispatch(getArticleList(page, limit, order, orderBy));
   }
 
   render () {
@@ -62,21 +77,28 @@ class ArticleList extends React.Component {
       <div>
         <div className={classNames(classes.tool_set)}>
           <Tooltip title="Add">
-            <Button variant="fab" color="secondary" aria-label="Add" className={classes.fab}>
-              <AddIcon/>
-            </Button>
+            <Link to="/article_add">
+              <Button variant="fab" color="secondary" aria-label="Add" className={classes.fab}>
+                <AddIcon/>
+              </Button>
+            </Link>
           </Tooltip>
         </div>
         <Paper className={classes.root}>
+          {this.state.reFetching ? (<LinearProgress color='secondary'/>) : null}
           <Table
             id="articleId"
             data={articles}
             header={header}
-            orderBy="articleId"
+            orderBy={this.state.orderBy}
+            count={this.props.count}
             title="文章列表"
             clickCallback={v => {
               alert(v);
-            }}/>
+            }}
+            pageCallback={this.rePage}
+            pageBase={1}
+          />
         </Paper>
       </div>
     );
@@ -86,7 +108,8 @@ class ArticleList extends React.Component {
 const mapStateToProps = (state) => ({
   isFetching: state.articleList.isFetching,
   articles: state.articleList.data.articles,
-  header: state.articleList.data.header
+  header: state.articleList.data.header,
+  count: state.articleList.data.count,
 });
 
 export default withStyles(styles)(connect(mapStateToProps)(ArticleList));
