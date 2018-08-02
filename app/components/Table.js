@@ -11,7 +11,6 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -32,6 +31,19 @@ function getSorting (order, orderBy) {
 }
 
 class EnhancedTableHead extends React.Component {
+
+  static propTypes = {
+    header: PropTypes.arrayOf(
+      PropTypes.shape({title: PropTypes.string, field: PropTypes.string})
+    ).isRequired,
+    numSelected: PropTypes.number.isRequired,
+    onRequestSort: PropTypes.func.isRequired,
+    onSelectAllClick: PropTypes.func.isRequired,
+    order: PropTypes.string.isRequired,
+    orderBy: PropTypes.string.isRequired,
+    rowCount: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired
+  };
 
   createSortHandler = property => event => this.props.onRequestSort(event, property);
 
@@ -79,19 +91,6 @@ class EnhancedTableHead extends React.Component {
   }
 }
 
-EnhancedTableHead.propTypes = {
-  header: PropTypes.arrayOf(
-    PropTypes.shape({title: PropTypes.string, field: PropTypes.string})
-  ).isRequired,
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.string.isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
-  id: PropTypes.string.isRequired
-};
-
 const toolbarStyles = theme => ({
   root: {
     paddingRight: theme.spacing.unit
@@ -118,6 +117,7 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
+
   const {numSelected, classes} = props;
 
   return (
@@ -165,11 +165,7 @@ EnhancedTableToolbar.propTypes = {
 
 EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
 
-const styles = theme => ({
-  root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3
-  },
+const styles = () => ({
   table: {
     minWidth: 1020
   },
@@ -187,7 +183,6 @@ class EnhancedTable extends React.Component {
       order: 'asc',
       orderBy: props.orderBy,
       selected: [],
-      // todo: 测试数据
       data: props.data,
       page: 0,
       rowsPerPage: 5
@@ -258,7 +253,7 @@ class EnhancedTable extends React.Component {
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
-      <Paper className={classes.root}>
+      <div>
         <EnhancedTableToolbar numSelected={selected.length} title={title}/>
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
@@ -330,7 +325,7 @@ class EnhancedTable extends React.Component {
           onChangePage={this.handleChangePage}
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
         />
-      </Paper>
+      </div>
     );
   }
 }

@@ -11,7 +11,7 @@ export const ARTICLE_LIST = [
   {
     articleId: 1,
     articleTitle: 'react从入门到放弃_1',
-    articleAuthor: 'BM',
+    articleAuthor: '大孟',
     articleCreateDate: '2018-05-04',
     articleUpdateDate: '2018-05-23',
     articleStatus: '审核中'
@@ -19,7 +19,7 @@ export const ARTICLE_LIST = [
   {
     articleId: 2,
     articleTitle: 'java从入门到放弃_1',
-    articleAuthor: 'BM',
+    articleAuthor: '大孟',
     articleCreateDate: '2018-05-07',
     articleUpdateDate: '2018-06-14',
     articleStatus: '已通过'
@@ -27,7 +27,7 @@ export const ARTICLE_LIST = [
   {
     articleId: 3,
     articleTitle: 'Go从入门到放弃_1',
-    articleAuthor: 'BM',
+    articleAuthor: '大孟',
     articleCreateDate: '2018-6-13',
     articleUpdateDate: '2018-06-20',
     articleStatus: '未发布'
@@ -35,7 +35,7 @@ export const ARTICLE_LIST = [
   {
     articleId: 4,
     articleTitle: 'react从入门到放弃_2',
-    articleAuthor: 'BM',
+    articleAuthor: '大孟',
     articleCreateDate: '2018-05-04',
     articleUpdateDate: '2018-05-23',
     articleStatus: '审核中'
@@ -43,7 +43,7 @@ export const ARTICLE_LIST = [
   {
     articleId: 5,
     articleTitle: 'java从入门到放弃_2',
-    articleAuthor: 'BM',
+    articleAuthor: '大孟',
     articleCreateDate: '2018-05-07',
     articleUpdateDate: '2018-06-14',
     articleStatus: '已通过'
@@ -51,7 +51,7 @@ export const ARTICLE_LIST = [
   {
     articleId: 6,
     articleTitle: 'Go从入门到放弃_2',
-    articleAuthor: 'BM',
+    articleAuthor: '大孟',
     articleCreateDate: '2018-6-13',
     articleUpdateDate: '2018-06-20',
     articleStatus: '未发布'
@@ -59,7 +59,7 @@ export const ARTICLE_LIST = [
   {
     articleId: 7,
     articleTitle: 'react从入门到放弃_3',
-    articleAuthor: 'BM',
+    articleAuthor: '大孟',
     articleCreateDate: '2018-05-04',
     articleUpdateDate: '2018-05-23',
     articleStatus: '审核中'
@@ -67,7 +67,7 @@ export const ARTICLE_LIST = [
   {
     articleId: 8,
     articleTitle: 'java从入门到放弃_4',
-    articleAuthor: 'BM',
+    articleAuthor: '大孟',
     articleCreateDate: '2018-05-07',
     articleUpdateDate: '2018-06-14',
     articleStatus: '已通过'
@@ -75,7 +75,7 @@ export const ARTICLE_LIST = [
   {
     articleId: 9,
     articleTitle: 'Go从入门到放弃_3',
-    articleAuthor: 'BM',
+    articleAuthor: '大孟',
     articleCreateDate: '2018-6-13',
     articleUpdateDate: '2018-06-20',
     articleStatus: '未发布'

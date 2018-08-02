@@ -14,7 +14,7 @@ const fetchData = () =>
         header: ARTICLE_LIST_HEADER,
         articles: ARTICLE_LIST
       });
-    }, 500);
+    }, 1000);
   });
 
 export function getArticleList () {
