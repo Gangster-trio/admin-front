@@ -13,7 +13,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { Route } from 'react-router-dom';
-import ArticleList from '../page/articleList';
 import ListItem from '@material-ui/core/ListItem/ListItem';
 import ListItemText from '@material-ui/core/ListItemText/ListItemText';
 import ExpandLess from '@material-ui/icons/ExpandLess';
@@ -128,6 +127,7 @@ class PersistentDrawer extends React.Component {
         child: PropTypes.arrayOf(PropTypes.object),
       }),
     ),
+    router: PropTypes.arrayOf(PropTypes.object).isRequired,
   };
 
   constructor(props) {
@@ -213,7 +213,7 @@ class PersistentDrawer extends React.Component {
   }
 
   render() {
-    const { classes, theme, data } = this.props;
+    const { classes, theme, data, router } = this.props;
     const { anchor, open } = this.state;
 
     const drawer = (
@@ -270,7 +270,9 @@ class PersistentDrawer extends React.Component {
           >
             <div className={classes.drawerHeader} />
             <div className={classes.content}>
-              <Route path={'/article_list'} component={ArticleList} />
+              {router.map(v => (
+                <Route key={v.path} path={v.path} component={v.component} />
+              ))}
             </div>
           </main>
         </div>

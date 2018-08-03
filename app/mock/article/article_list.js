@@ -94,5 +94,11 @@ export function MOCK_DB_getArticle(page, limit, order, orderBy) {
   if (page <= 0) {
     page = 1;
   }
+  if (page * limit > ARTICLE_LIST.length) {
+    return ARTICLE_LIST.sort(getSorting(order, orderBy)).slice(
+      (page - 1) * limit,
+      ARTICLE_LIST.length,
+    );
+  }
   return ARTICLE_LIST.sort(getSorting(order, orderBy)).slice((page - 1) * limit, page * limit);
 }

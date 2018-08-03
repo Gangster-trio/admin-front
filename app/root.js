@@ -15,6 +15,7 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import { lightBlue, pink } from '@material-ui/core/colors';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import navRouters from './router/NavRouters';
 
 const NavList = [
   {
@@ -81,7 +82,7 @@ export default class RootApp extends React.Component {
     return (
       <MuiThemeProvider theme={theme}>
         <div>
-          <PersistentDrawer data={NavList} />
+          <PersistentDrawer data={NavList} router={navRouters} />
           <div className="content">
             <Route path="/table_example" component={Table} />
           </div>
