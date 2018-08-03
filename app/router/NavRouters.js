@@ -1,9 +1,14 @@
-import ArticleList from '../page/articleList';
+import ArticleList from "../page/articleList";
+import ArticleCreate from "../page/articleCreate";
 
 const navRouters = [
   {
-    path: '/list_article',
+    path: "/article_list",
     component: ArticleList
+  },
+  {
+    path: "/article_create",
+    component: ArticleCreate
   }
 ];
 

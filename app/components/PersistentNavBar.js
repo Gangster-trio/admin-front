@@ -1,61 +1,61 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { Route } from 'react-router-dom';
-import ArticleList from '../page/articleList';
-import ListItem from '@material-ui/core/ListItem/ListItem';
-import ListItemText from '@material-ui/core/ListItemText/ListItemText';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Collapse from '@material-ui/core/Collapse/Collapse';
-import NavLink from 'react-router-dom/es/NavLink';
+import React from "react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
+import { withStyles } from "@material-ui/core/styles";
+import Drawer from "@material-ui/core/Drawer";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import List from "@material-ui/core/List";
+import Typography from "@material-ui/core/Typography";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import MenuIcon from "@material-ui/icons/Menu";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import { Route } from "react-router-dom";
+import ArticleList from "../page/articleList";
+import ListItem from "@material-ui/core/ListItem/ListItem";
+import ListItemText from "@material-ui/core/ListItemText/ListItemText";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import Collapse from "@material-ui/core/Collapse/Collapse";
+import NavLink from "react-router-dom/es/NavLink";
 
 const drawerWidth = 240;
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    position: 'absolute',
-    height: '100%',
-    width: '100%'
+    position: "absolute",
+    height: "100%",
+    width: "100%"
   },
   appFrame: {
-    height: '100%',
+    height: "100%",
     zIndex: 1,
-    overflow: 'hidden',
-    position: 'relative',
-    display: 'flex',
-    width: '100%'
+    overflow: "hidden",
+    position: "relative",
+    display: "flex",
+    width: "100%"
   },
   appBar: {
-    position: 'fixed',
-    transition: theme.transitions.create(['margin', 'width'], {
+    position: "fixed",
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     })
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     })
   },
-  'appBarShift-left': {
+  "appBarShift-left": {
     marginLeft: drawerWidth
   },
-  'appBarShift-right': {
+  "appBarShift-right": {
     marginRight: drawerWidth
   },
   menuButton: {
@@ -63,58 +63,58 @@ const styles = theme => ({
     marginRight: 20
   },
   hide: {
-    display: 'none'
+    display: "none"
   },
   drawerPaper: {
-    position: 'fixed',
+    position: "fixed",
     width: drawerWidth
   },
   drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: '0 8px',
-    height: '64px',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: "0 8px",
+    height: "64px",
     ...theme.mixins.toolbar
   },
   main: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    overflow: 'auto',
+    overflow: "auto",
     // padding: theme.spacing.unit * 3,
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    position: 'relative',
-    height: '100%',
-    width: '100%'
+    position: "relative",
+    height: "100%",
+    width: "100%"
   },
   mainShift: {
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     })
   },
   //以下两个类当Drawer open时应用
-  'mainShift-left': {
+  "mainShift-left": {
     marginLeft: drawerWidth
   },
-  'mainShift-right': {
+  "mainShift-right": {
     marginRight: drawerWidth
   },
   nav_a: {
-    textDecoration: 'none',
-    display: 'block',
-    color: theme.palette.primary.main,
+    textDecoration: "none",
+    display: "block",
+    color: theme.palette.primary.main
   },
   content: {
-    position: 'absolute',
-    width: '100%',
-    height: 'calc(100% - 64px)',
+    position: "absolute",
+    width: "100%",
+    height: "calc(100% - 64px)"
   },
   active: {
-    background: theme.palette.action.selected,
+    background: theme.palette.action.selected
   }
 });
 
@@ -130,30 +130,31 @@ class PersistentDrawer extends React.Component {
         link: PropTypes.string,
         child: PropTypes.arrayOf(PropTypes.object)
       })
-    )
+    ),
+    router: PropTypes.arrayOf(PropTypes.object).isRequired
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       open: false,
-      anchor: 'left'
+      anchor: "left"
     };
   }
 
   handleDrawerOpen = () => {
-    this.setState({open: true});
+    this.setState({ open: true });
   };
 
   handleDrawerClose = () => {
-    this.setState({open: false});
+    this.setState({ open: false });
   };
 
   isLiExpand = (v) => {
     return this.state[this.formatLiExpand(v)];
   };
 
-  formatLiExpand = v => 'item_' + v.text + '_isExpand';
+  formatLiExpand = v => "item_" + v.text + "_isExpand";
 
   changeLiExpand = v => {
     return () =>
@@ -163,7 +164,7 @@ class PersistentDrawer extends React.Component {
       });
   };
 
-  renderListItem (item) {
+  renderListItem(item) {
     if (item.child === undefined) {
       return (
         <NavLink
@@ -215,9 +216,9 @@ class PersistentDrawer extends React.Component {
     );
   }
 
-  render () {
-    const {classes, theme, data} = this.props;
-    const {anchor, open} = this.state;
+  render() {
+    const { classes, theme, data, router } = this.props;
+    const { anchor, open } = this.state;
 
     const drawer = (
       <Drawer
@@ -233,7 +234,7 @@ class PersistentDrawer extends React.Component {
             Gangster-CMS
           </Typography>
           <IconButton onClick={this.handleDrawerClose}>
-            {theme.direction === 'rtl' ? (
+            {theme.direction === "rtl" ? (
               <ChevronRightIcon/>
             ) : (
               <ChevronLeftIcon/>
@@ -280,7 +281,7 @@ class PersistentDrawer extends React.Component {
           >
             <div className={classes.drawerHeader}/>
             <div className={classes.content}>
-              <Route path={'/article_list'} component={ArticleList}/>
+              {router.map(v => <Route path={v.path} component={v.component}/>)}
             </div>
           </main>
         </div>
@@ -289,4 +290,4 @@ class PersistentDrawer extends React.Component {
   }
 }
 
-export default withStyles(styles, {withTheme: true})(PersistentDrawer);
+export default withStyles(styles, { withTheme: true })(PersistentDrawer);

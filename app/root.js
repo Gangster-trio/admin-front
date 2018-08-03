@@ -11,6 +11,7 @@ import SuperVisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import SettingsApplicationIcon from '@material-ui/icons/SettingsApplications';
 import StorageIcon from '@material-ui/icons/Storage';
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
+import navRouters from "./router/NavRouters";
 
 const NavList = [
   {
@@ -64,10 +65,7 @@ export default class RootApp extends React.Component {
   render () {
     return (
       <div>
-        <PersistentDrawer data={NavList}/>
-        <div className="content">
-          <Route path="/table_example" component={Table}/>
-        </div>
+        <PersistentDrawer data={NavList} router={navRouters}/>
       </div>
     );
   }

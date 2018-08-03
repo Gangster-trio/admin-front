@@ -77,7 +77,7 @@ class ArticleList extends React.Component {
       <div>
         <div className={classNames(classes.tool_set)}>
           <Tooltip title="Add">
-            <Link to="/article_add">
+            <Link to="/article_create">
               <Button variant="fab" color="secondary" aria-label="Add" className={classes.fab}>
                 <AddIcon/>
               </Button>
