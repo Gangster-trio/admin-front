@@ -5,7 +5,7 @@ module.exports = {
   entry: './app/index.js',
   output: {
     path: path.join(__dirname, '/dist'),
-    filename: 'index_bundle.js'
+    filename: 'index_bundle.js',
   },
   mode: 'development',
   devtool: 'source-map',
@@ -15,8 +15,8 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader'
-        }
+          loader: 'babel-loader',
+        },
       },
       {
         test: /\.css$/,
@@ -28,11 +28,11 @@ module.exports = {
             loader: 'postcss-loader',
             options: {
               config: {
-                path: path.resolve(__dirname, './postcss.config.js')
-              }
-            }
-          }
-        ]
+                path: path.resolve(__dirname, './postcss.config.js'),
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.less$/,
@@ -44,12 +44,12 @@ module.exports = {
             loader: 'postcss-loader',
             options: {
               config: {
-                path: path.resolve(__dirname, './postcss.config.js')
-              }
-            }
+                path: path.resolve(__dirname, './postcss.config.js'),
+              },
+            },
           },
-          'less-loader'
-        ]
+          'less-loader',
+        ],
       },
       {
         test: /\.(png|jpg|jpeg|ico|gif)$/i,
@@ -58,10 +58,10 @@ module.exports = {
           {
             loader: 'url-loader',
             options: {
-              limit: 8192
-            }
-          }
-        ]
+              limit: 8192,
+            },
+          },
+        ],
       },
       {
         test: /\.(eot|svg|ttf|woff)$/i,
@@ -70,16 +70,16 @@ module.exports = {
           {
             loader: 'url-loader',
             options: {
-              limit: 8192
-            }
-          }
-        ]
-      }
-    ]
+              limit: 8192,
+            },
+          },
+        ],
+      },
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './app/index.html'
-    })
-  ]
+      template: './app/index.html',
+    }),
+  ],
 };

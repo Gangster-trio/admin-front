@@ -9,8 +9,8 @@ import Provider from 'react-redux/es/components/Provider';
 render(
   <Provider store={store}>
     <BrowserRouter>
-      <Route path="/" component={RootApp}/>
+      <Route path="/" component={RootApp} />
     </BrowserRouter>
   </Provider>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );

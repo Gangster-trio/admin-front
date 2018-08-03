@@ -190,7 +190,7 @@ class EnhancedTable extends React.Component {
       .isRequired,
     //标识符,如"articleId"
     id: PropTypes.string.isRequired,
-    //初始数据
+    //
     data: PropTypes.arrayOf(PropTypes.object).isRequired,
     //初始排序依据
     orderBy: PropTypes.string.isRequired,

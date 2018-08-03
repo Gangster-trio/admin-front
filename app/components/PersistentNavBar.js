@@ -28,46 +28,46 @@ const styles = theme => ({
     flexGrow: 1,
     position: 'absolute',
     height: '100%',
-    width: '100%'
+    width: '100%',
   },
   appFrame: {
     height: '100%',
-    zIndex: 1,
+    zIndex: theme.zIndex.appBar,
     overflow: 'hidden',
     position: 'relative',
     display: 'flex',
-    width: '100%'
+    width: '100%',
   },
   appBar: {
     position: 'fixed',
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    })
+      duration: theme.transitions.duration.leavingScreen,
+    }),
   },
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    })
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   },
   'appBarShift-left': {
-    marginLeft: drawerWidth
+    marginLeft: drawerWidth,
   },
   'appBarShift-right': {
-    marginRight: drawerWidth
+    marginRight: drawerWidth,
   },
   menuButton: {
     marginLeft: 12,
-    marginRight: 20
+    marginRight: 20,
   },
   hide: {
-    display: 'none'
+    display: 'none',
   },
   drawerPaper: {
     position: 'fixed',
-    width: drawerWidth
+    width: drawerWidth,
   },
   drawerHeader: {
     display: 'flex',
@@ -75,7 +75,7 @@ const styles = theme => ({
     justifyContent: 'flex-end',
     padding: '0 8px',
     height: '64px',
-    ...theme.mixins.toolbar
+    ...theme.mixins.toolbar,
   },
   main: {
     flexGrow: 1,
@@ -84,29 +84,24 @@ const styles = theme => ({
     // padding: theme.spacing.unit * 3,
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
+      duration: theme.transitions.duration.leavingScreen,
     }),
     position: 'relative',
     height: '100%',
-    width: '100%'
+    width: '100%',
   },
   mainShift: {
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    })
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   },
   //以下两个类当Drawer open时应用
   'mainShift-left': {
-    marginLeft: drawerWidth
+    marginLeft: drawerWidth,
   },
   'mainShift-right': {
-    marginRight: drawerWidth
-  },
-  nav_a: {
-    textDecoration: 'none',
-    display: 'block',
-    color: theme.palette.primary.main,
+    marginRight: drawerWidth,
   },
   content: {
     position: 'absolute',
@@ -115,11 +110,13 @@ const styles = theme => ({
   },
   active: {
     background: theme.palette.action.selected,
-  }
+  },
+  list_item: {
+    padding: '12px',
+  },
 });
 
 class PersistentDrawer extends React.Component {
-
   static propTypes = {
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
@@ -128,28 +125,28 @@ class PersistentDrawer extends React.Component {
         text: PropTypes.string.isRequired,
         icon: PropTypes.object,
         link: PropTypes.string,
-        child: PropTypes.arrayOf(PropTypes.object)
-      })
-    )
+        child: PropTypes.arrayOf(PropTypes.object),
+      }),
+    ),
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       open: false,
-      anchor: 'left'
+      anchor: 'left',
     };
   }
 
   handleDrawerOpen = () => {
-    this.setState({open: true});
+    this.setState({ open: true });
   };
 
   handleDrawerClose = () => {
-    this.setState({open: false});
+    this.setState({ open: false });
   };
 
-  isLiExpand = (v) => {
+  isLiExpand = v => {
     return this.state[this.formatLiExpand(v)];
   };
 
@@ -163,20 +160,21 @@ class PersistentDrawer extends React.Component {
       });
   };
 
-  renderListItem (item) {
+  renderListItem(item) {
     if (item.child === undefined) {
       return (
-        <NavLink
-          className={this.props.classes.nav_a}
-          key={item.link}
+        <ListItem
+          component={NavLink}
+          key={item.text}
           activeClassName={this.props.classes.active}
           to={item.link}
+          disableGutters
+          className={this.props.classes.list_item}
+          button
         >
-          <ListItem disableGutters button key={item.text}>
-            {item.icon}
-            <ListItemText inset primary={item.text}/>
-          </ListItem>
-        </NavLink>
+          {item.icon}
+          <ListItemText inset primary={item.text} />
+        </ListItem>
       );
     }
 
@@ -188,36 +186,35 @@ class PersistentDrawer extends React.Component {
           button
           key={item.text}
           onClick={this.changeLiExpand(item)}
+          className={this.props.classes.list_item}
         >
           {item.icon}
-          <ListItemText inset primary={item.text}/>
-          {this.isLiExpand(item) ? <ExpandLess/> : <ExpandMore/>}
+          <ListItemText inset primary={item.text} />
+          {this.isLiExpand(item) ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={this.isLiExpand(item)} timeout="auto" unmountOnExit>
           <List>
             {item.child.map(v => (
-              <NavLink
-                className={this.props.classes.nav_a}
-                key={v.link}
+              <ListItem
+                component={NavLink}
                 to={v.link}
+                key={v.link}
                 activeClassName={this.props.classes.active}
+                button
               >
-                <ListItem button>
-                  {v.icon}
-                  <ListItemText inset primary={v.text}/>
-                </ListItem>
-              </NavLink>
+                {v.icon}
+                <ListItemText inset primary={v.text} />
+              </ListItem>
             ))}
           </List>
-          <Divider/>
         </Collapse>
       </div>
     );
   }
 
-  render () {
-    const {classes, theme, data} = this.props;
-    const {anchor, open} = this.state;
+  render() {
+    const { classes, theme, data } = this.props;
+    const { anchor, open } = this.state;
 
     const drawer = (
       <Drawer
@@ -225,7 +222,7 @@ class PersistentDrawer extends React.Component {
         anchor={anchor}
         open={open}
         classes={{
-          paper: classes.drawerPaper
+          paper: classes.drawerPaper,
         }}
       >
         <div className={classes.drawerHeader}>
@@ -233,14 +230,10 @@ class PersistentDrawer extends React.Component {
             Gangster-CMS
           </Typography>
           <IconButton onClick={this.handleDrawerClose}>
-            {theme.direction === 'rtl' ? (
-              <ChevronRightIcon/>
-            ) : (
-              <ChevronLeftIcon/>
-            )}
+            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
-        <Divider/>
+        <Divider />
         <List>{data.map(v => this.renderListItem(v))}</List>
       </Drawer>
     );
@@ -251,7 +244,7 @@ class PersistentDrawer extends React.Component {
           <AppBar
             className={classNames(classes.appBar, {
               [classes.appBarShift]: open,
-              [classes[`appBarShift-${anchor}`]]: open
+              [classes[`appBarShift-${anchor}`]]: open,
             })}
           >
             <Toolbar disableGutters={!open}>
@@ -261,7 +254,7 @@ class PersistentDrawer extends React.Component {
                 onClick={this.handleDrawerOpen}
                 className={classNames(classes.menuButton, open && classes.hide)}
               >
-                <MenuIcon/>
+                <MenuIcon />
               </IconButton>
               <Typography variant="title" color="inherit" noWrap>
                 后台管理系统
@@ -270,17 +263,14 @@ class PersistentDrawer extends React.Component {
           </AppBar>
           {drawer}
           <main
-            className={classNames(
-              classes.main,
-              {
-                [classes.mainShift]: open,
-                [classes[`mainShift-${anchor}`]]: open
-              }
-            )}
+            className={classNames(classes.main, {
+              [classes.mainShift]: open,
+              [classes[`mainShift-${anchor}`]]: open,
+            })}
           >
-            <div className={classes.drawerHeader}/>
+            <div className={classes.drawerHeader} />
             <div className={classes.content}>
-              <Route path={'/article_list'} component={ArticleList}/>
+              <Route path={'/article_list'} component={ArticleList} />
             </div>
           </main>
         </div>
@@ -289,4 +279,4 @@ class PersistentDrawer extends React.Component {
   }
 }
 
-export default withStyles(styles, {withTheme: true})(PersistentDrawer);
+export default withStyles(styles, { withTheme: true })(PersistentDrawer);

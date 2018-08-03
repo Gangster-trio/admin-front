@@ -1,10 +1,10 @@
 export const ARTICLE_LIST_HEADER = [
-  {title: '文章ID', field: 'articleId'},
-  {title: '文章标题', field: 'articleTitle'},
-  {title: '文章作者', field: 'articleAuthor'},
-  {title: '创建日期', field: 'articleCreateDate'},
-  {title: '修改日期', field: 'articleUpdateDate'},
-  {title: '文章状态', field: 'articleStatus'}
+  { title: '文章ID', field: 'articleId' },
+  { title: '文章标题', field: 'articleTitle' },
+  { title: '文章作者', field: 'articleAuthor' },
+  { title: '创建日期', field: 'articleCreateDate' },
+  { title: '修改日期', field: 'articleUpdateDate' },
+  { title: '文章状态', field: 'articleStatus' },
 ];
 
 export let ARTICLE_LIST = [
@@ -14,7 +14,7 @@ export let ARTICLE_LIST = [
     articleAuthor: '大孟',
     articleCreateDate: '2018-05-04',
     articleUpdateDate: '2018-05-23',
-    articleStatus: '审核中'
+    articleStatus: '审核中',
   },
   {
     articleId: 2,
@@ -22,7 +22,7 @@ export let ARTICLE_LIST = [
     articleAuthor: '大孟',
     articleCreateDate: '2018-05-07',
     articleUpdateDate: '2018-06-14',
-    articleStatus: '已通过'
+    articleStatus: '已通过',
   },
   {
     articleId: 3,
@@ -30,7 +30,7 @@ export let ARTICLE_LIST = [
     articleAuthor: '大孟',
     articleCreateDate: '2018-6-13',
     articleUpdateDate: '2018-06-20',
-    articleStatus: '未发布'
+    articleStatus: '未发布',
   },
   {
     articleId: 4,
@@ -38,7 +38,7 @@ export let ARTICLE_LIST = [
     articleAuthor: '大孟',
     articleCreateDate: '2018-05-04',
     articleUpdateDate: '2018-05-23',
-    articleStatus: '审核中'
+    articleStatus: '审核中',
   },
   {
     articleId: 5,
@@ -46,7 +46,7 @@ export let ARTICLE_LIST = [
     articleAuthor: '大孟',
     articleCreateDate: '2018-05-07',
     articleUpdateDate: '2018-06-14',
-    articleStatus: '已通过'
+    articleStatus: '已通过',
   },
   {
     articleId: 6,
@@ -54,7 +54,7 @@ export let ARTICLE_LIST = [
     articleAuthor: '大孟',
     articleCreateDate: '2018-6-13',
     articleUpdateDate: '2018-06-20',
-    articleStatus: '未发布'
+    articleStatus: '未发布',
   },
   {
     articleId: 7,
@@ -62,7 +62,7 @@ export let ARTICLE_LIST = [
     articleAuthor: '大孟',
     articleCreateDate: '2018-05-04',
     articleUpdateDate: '2018-05-23',
-    articleStatus: '审核中'
+    articleStatus: '审核中',
   },
   {
     articleId: 8,
@@ -70,7 +70,7 @@ export let ARTICLE_LIST = [
     articleAuthor: '大孟',
     articleCreateDate: '2018-05-07',
     articleUpdateDate: '2018-06-14',
-    articleStatus: '已通过'
+    articleStatus: '已通过',
   },
   {
     articleId: 9,
@@ -78,27 +78,21 @@ export let ARTICLE_LIST = [
     articleAuthor: '大孟',
     articleCreateDate: '2018-6-13',
     articleUpdateDate: '2018-06-20',
-    articleStatus: '未发布'
-  }
+    articleStatus: '未发布',
+  },
 ];
 
-function getSorting (order, orderBy) {
-  //By @oliviertassinari
-  return order === 'desc' ? (a, b) => b[orderBy] - a[orderBy] : (a, b) => a[orderBy] - b[orderBy];
-}
+let getSorting = (order, orderBy) => (a, b) => {
+  if (a[orderBy] > b[orderBy]) {
+    return order === 'desc' ? -1 : 1;
+  } else if (a[orderBy] < b[orderBy]) {
+    return order === 'desc' ? 1 : -1;
+  } else return 0;
+};
 
-export function MOCK_DB_getArticle (page, limit, order, orderBy) {
+export function MOCK_DB_getArticle(page, limit, order, orderBy) {
   if (page <= 0) {
     page = 1;
   }
   return ARTICLE_LIST.sort(getSorting(order, orderBy)).slice((page - 1) * limit, page * limit);
 }
-
-export const test_header = [
-  {title: 'id', filed: 'id'},
-  {title: '名称', field: 'name'},
-  {title: '卡路里', filed: 'calories'},
-  {title: '脂肪', filed: 'fat'},
-  {title: '碳水化合物', field: 'carbs'},
-  {title: '蛋白质', field: 'protein'}
-];
