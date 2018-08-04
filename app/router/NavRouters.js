@@ -1,5 +1,6 @@
-import ArticleList from '../page/articleList';
-import ArticleCreate from '../page/articleCreate';
+import ArticleList from '../page/ArticleList';
+import ArticleAdd from '../page/ArticleAdd';
+import { Tree } from '../components/Tree';
 
 const navRouters = [
   {
@@ -8,8 +9,12 @@ const navRouters = [
   },
   {
     path: '/article_create',
-    component: ArticleCreate,
+    component: ArticleAdd,
   },
+  {
+    path: '/test_tree',
+    component: Tree,
+  }
 ];
 
 export default navRouters;

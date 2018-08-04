@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    // path to output directory
+    "sourceMap": true,
+    // allow sourcemap support
+    "module": "es2017",
+    // specify module code generation
+    "jsx": "react",
+    // use typescript to transpile jsx to js
+    "target": "es6",
+    // specify ECMAScript target version
+    "allowJs": true,
+    // allow a partial TypeScript and JavaScript codebase
+    "lib": [
+      "es5",
+      "es6",
+      "dom"
+    ],
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noEmit": true,
+    "experimentalDecorators": true
+  },
+  "include": [
+    "./app/"
+  ]
+}

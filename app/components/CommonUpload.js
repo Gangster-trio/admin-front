@@ -5,29 +5,35 @@ import { generateId } from '../util/randomHash';
 import Typography from '@material-ui/core/Typography/Typography';
 
 class CommonUpload extends React.Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      inputId: props.inputId === undefined ? generateId(10) : props.inputId
+    };
+  }
+
   static propTypes = {
     // 要在button上写的名字
     buttonName: PropTypes.string.isRequired,
     // button的颜色
     color: PropTypes.string.isRequired,
-    url: PropTypes.string.isRequired,
-    multiple: PropTypes.bool.isRequired,
+    multiple: PropTypes.bool,
     callback: PropTypes.func.isRequired,
-    hashIdLength: PropTypes.number.isRequired,
     icon: PropTypes.object,
     inputId: PropTypes.string,
+  };
+
+  static defaultProps = {
+    multiple: false,
   };
 
   handleFileUpload = e => {
     this.props.callback(e.target.files);
   };
 
-  static defaultProps = {
-    inputId: generateId(10),
-  };
-
-  render() {
-    const { buttonName, multiple, inputId, icon } = this.props;
+  render () {
+    const {buttonName, multiple, icon} = this.props;
+    const {inputId} = this.state;
     return (
       <Fragment>
         <input
@@ -39,12 +45,12 @@ class CommonUpload extends React.Component {
         />
         <label htmlFor={inputId}>
           <Button
-            style={{ marginLeft: 10, marginRight: 10 }}
+            style={{marginLeft: 10, marginRight: 10}}
             color={this.props.color}
             variant="contained"
             component="span"
           >
-            <Typography color="inherit" style={{ paddingRight: '10px' }}>
+            <Typography color="inherit" style={{paddingRight: '10px'}}>
               {buttonName}
             </Typography>
             {icon}

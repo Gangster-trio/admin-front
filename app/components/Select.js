@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import CreatableSelect from 'react-select/lib/Creatable';
 
 export default class CreatableMulti extends Component {
-  handleChange = (newValue: any, actionMeta: any) => {
+  handleChange = (newValue, actionMeta) => {
     alert(newValue, actionMeta);
   };
 

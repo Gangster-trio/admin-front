@@ -7,7 +7,7 @@ function byteToHex(byte) {
 // str generateId(int len);
 //   len - must be an even number (default: 40)
 export function generateId(len) {
-  let arr = new Uint8Array((len || 40) / 2);
+  let arr = new Uint8Array(len);
   window.crypto.getRandomValues(arr);
   return [].map.call(arr, byteToHex).join('');
 }
