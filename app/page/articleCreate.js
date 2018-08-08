@@ -1,64 +1,64 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import purple from '@material-ui/core/colors/purple';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import CommonUpload from '../components/CommonUpload';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import CreatableMulti from '../components/Select';
+import React from "react";
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import purple from "@material-ui/core/colors/purple";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
+import CommonUpload from "../components/CommonUpload";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import CreatableMulti from "../components/Select";
 
 const styles = theme => ({
   root: {
     ...theme.mixins.gutters(),
     paddingTop: theme.spacing.unit * 2,
     paddingBottom: theme.spacing.unit * 2,
-    margin: theme.spacing.unit * 5,
+    margin: theme.spacing.unit * 5
   },
   formControl: {
     margin: theme.spacing.unit,
-    minWidth: 120,
+    minWidth: 120
   },
   cssLabel: {
-    '&$cssFocused': {
-      color: purple[500],
+    "&$cssFocused": {
+      color: purple[500]
     },
-    'padding-right': 20,
+    "padding-right": 20
   },
   cssFocused: {},
   cssUnderline: {
-    '&:after': {
-      borderBottomColor: purple[500],
-    },
+    "&:after": {
+      borderBottomColor: purple[500]
+    }
   },
 
   button: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing.unit
   },
   rightIcon: {
-    marginLeft: theme.spacing.unit,
+    marginLeft: theme.spacing.unit
   },
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 200,
+    width: 200
   },
   descTextField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 550,
-  },
+    width: 550
+  }
 });
 
 class AddArticle extends React.Component {
   state = {
-    articleType: '',
-    open: false,
+    articleType: "",
+    open: false
   };
 
   handleChange = event => {
@@ -74,7 +74,7 @@ class AddArticle extends React.Component {
   };
 
   generateFileUploadDOM() {
-    return <CloudUploadIcon className={this.props.classes.rightIcon} />;
+    return <CloudUploadIcon className={this.props.classes.rightIcon}/>;
   }
 
   // 文件上传的回调
@@ -117,8 +117,8 @@ class AddArticle extends React.Component {
               value={this.state.articleType}
               onChange={this.handleChange}
               inputProps={{
-                name: 'articleType',
-                id: 'demo-controlled-open-select',
+                name: "articleType",
+                id: "demo-controlled-open-select"
               }}
             >
               <MenuItem value="视频">视频</MenuItem>
@@ -140,12 +140,12 @@ class AddArticle extends React.Component {
 
           <div>
             <CommonUpload
-              buttonName={'文章缩略图'}
+              buttonName={"文章缩略图"}
               url="http://localhost:8080/file/upload"
               color="primary"
               multiple={true}
               hashIdLength={10}
-              icon={<CloudUploadIcon />}
+              icon={<CloudUploadIcon/>}
               callback={this.fileUploadCallback}
               inputId="test"
             />
@@ -156,13 +156,13 @@ class AddArticle extends React.Component {
               color="primary"
               multiple={false}
               hashIdLength={30}
-              icon={<CloudUploadIcon />}
+              icon={<CloudUploadIcon/>}
               callback={this.fileUploadCallback}
             />
           </div>
 
           <Typography>
-            <CreatableMulti />
+            <CreatableMulti/>
           </Typography>
         </Paper>
       </div>
@@ -171,7 +171,7 @@ class AddArticle extends React.Component {
 }
 
 AddArticle.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(AddArticle);

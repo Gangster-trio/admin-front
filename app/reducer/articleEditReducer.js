@@ -1,19 +1,18 @@
 import { handleActions } from "redux-actions";
 
-export const articleListReducer = handleActions(
+export const articleEditReducer = handleActions(
   {
-    REQUEST_ARTICLE_LIST: state => ({
+    REQUEST_SINGLE_ARTICLE: state => ({
       ...state,
       isFetching: true
     }),
-    RECEIVE_ARTICLE_LIST: (state, action) => ({
+    RECEIVE_SINGLE_ARTICLE: (state, action) => ({
       ...state,
       isFetching: false,
       data: action.payload
     })
   },
   {
-    isFetching: true,
-    data: []
+    isFetching: true
   }
 );
