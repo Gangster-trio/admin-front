@@ -1,4 +1,4 @@
-import { handleActions } from "redux-actions";
+import {handleActions} from 'redux-actions';
 
 export const articleEditReducer = handleActions(
   {
@@ -13,6 +13,7 @@ export const articleEditReducer = handleActions(
     })
   },
   {
-    isFetching: true
+    isFetching: true,
+    data: {}
   }
 );

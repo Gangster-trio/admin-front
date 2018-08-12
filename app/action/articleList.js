@@ -1,18 +1,45 @@
-import { createAction } from "redux-actions";
-import { ARTICLE_LIST, ARTICLE_LIST_HEADER, MOCK_DB_getArticle } from "../mock/article/article_list";
+import {createAction} from 'redux-actions';
+import {ARTICLE_LIST_HEADER} from '../mock/article/article_list';
+import {convertDate, convertStatus} from '../util/dataConversioin';
+import {ACCESS_TOKEN, URL_ARTICLE_PRE} from '../util/data';
 
-const requestArticleList = createAction("REQUEST_ARTICLE_LIST");
-const receiveArticleList = createAction("RECEIVE_ARTICLE_LIST");
-export const fetchArticlesData = (page, limit, order, orderBy) =>
-  new Promise(resolve => {
-    setTimeout(() => {
-      resolve({
-        header: ARTICLE_LIST_HEADER,
-        articles: MOCK_DB_getArticle(page, limit, order, orderBy),
-        count: ARTICLE_LIST.length
-      });
-    }, 1000);
-  });
+const requestArticleList = createAction('REQUEST_ARTICLE_LIST');
+const receiveArticleList = createAction('RECEIVE_ARTICLE_LIST');
+
+export const fetchArticlesData = (page, limit, order, orderBy) => {
+  return fetch(`${URL_ARTICLE_PRE}?order=${order}&orderBy=${orderBy}&pageNumber=${page}&rowPerPage=${limit}`, {
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)
+      })
+    }
+  )
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      return new Error(`请求错误:${response.status}`);
+    })
+    .then(data => {
+        let articles = data.records;
+        articles.forEach(article => {
+          article.articleCreateTime = convertDate(article.articleCreateTime);
+          article.articleUpdateTime = convertDate(article.articleUpdateTime);
+          article.articleStatus = convertStatus(article.articleStatus);
+        });
+        console.log(articles);
+        return {
+          header: ARTICLE_LIST_HEADER,
+          articles: articles,
+          count: data.total
+        };
+      }
+    )
+    .catch(error => {
+      console.log(`发生错误:${error}`);
+    })
+    ;
+};
 
 export function getArticleList(page, limit, order, orderBy) {
   return async dispatch => {

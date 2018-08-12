@@ -20,14 +20,15 @@ export class Tree extends React.Component {
     data: PropTypes.array.isRequired,
     classes: PropTypes.object,
     onSelect: PropTypes.func,
+    title:PropTypes.string.isRequired
   };
 
   render () {
-    const {data, onSelect} = this.props;
+    const {data, onSelect,title} = this.props;
     return (
       <List style={{marginRight: '20px'}}>
         {data.map((v, i) => (
-          <TreeNode onSelect={onSelect} key={`${v.title}_${i}`} data={v}/>
+          <TreeNode onSelect={onSelect} key={`${v[title]}_${i}`} title={title} data={v}/>
         ))}
       </List>
     );
@@ -40,6 +41,7 @@ class TreeNodeInner extends React.Component {
     classes: PropTypes.object,
     onSelect: PropTypes.func,
     hidden: PropTypes.bool,
+    title: PropTypes.string.isRequired
   };
 
   constructor (props) {
@@ -60,14 +62,14 @@ class TreeNodeInner extends React.Component {
    * }
    */
   render () {
-    const {data, classes, onSelect} = this.props;
+    const {data, classes, onSelect,title} = this.props;
     const {hidden} = this.state;
 
     return (
       <div className={classes.node}>
         <ListItem
           onClick={() => {
-            onSelect(data);
+            onSelect(data.data);
           }}
           button={onSelect !== undefined} dense={true}>
           <div
@@ -76,7 +78,7 @@ class TreeNodeInner extends React.Component {
               this.setState({hidden: !hidden});
             }}
           >
-            {data.child !== undefined &&
+            {data.child &&
             (hidden ?
                 <ListItemIcon>
                   <KeyboardArrowDown/>
@@ -88,21 +90,21 @@ class TreeNodeInner extends React.Component {
             )
             }
           </div>
-          {data.child === undefined && (
+          {!data.child&& (
             <ListItemIcon>
               <FolderIcon/>
             </ListItemIcon>)
           }
           <ListItemText className={classes.list_item_text}
-                        primary={data.title}
+                        primary={data.data[title]}
           />
         </ListItem>
         {data.child &&
         <Collapse in={hidden}>
           <List>
             {data.child !== undefined && (
-              data.child.map(v => (
-                  <TreeNode onSelect={onSelect} hidden={true} key={v.title} data={v}/>
+              data.child.map((v,i) => (
+                  <TreeNode onSelect={onSelect} hidden={true} key={`${v[title]}_${i}`} title={title} data={v}/>
                 )
               )
             )}

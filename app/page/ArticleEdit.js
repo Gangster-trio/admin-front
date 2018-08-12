@@ -1,76 +1,51 @@
-import * as React from "react";
-import withStyles from "@material-ui/core/styles/withStyles";
-import PropTypes from "prop-types";
-import Paper from "@material-ui/core/Paper/Paper";
-import Typography from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
-import Dialog from "@material-ui/core/Dialog/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
-import { Tree } from "../components/Tree";
-import MenuItem from "@material-ui/core/MenuItem/MenuItem";
-import CommonUpload from "../components/CommonUpload";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import Editor from "../components/Editor";
-import Button from "@material-ui/core/Button/Button";
-import Done from "@material-ui/icons/Done";
-import Cancel from "@material-ui/icons/Cancel";
-import connect from "react-redux/es/connect/connect";
-import { getSingleArticle } from "../action/articleEditAction";
-import { applyMiddleware as dispatch } from "redux";
-import LinearProgress from "@material-ui/core/LinearProgress/LinearProgress";
-
+import * as React from 'react';
+import withStyles from '@material-ui/core/styles/withStyles';
+import PropTypes from 'prop-types';
+import Paper from '@material-ui/core/Paper/Paper';
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle/DialogTitle';
+import {Tree} from '../components/Tree';
+import MenuItem from '@material-ui/core/MenuItem/MenuItem';
+import CommonUpload from '../components/CommonUpload';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import Editor from '../components/Editor';
+import Button from '@material-ui/core/Button/Button';
+import Done from '@material-ui/icons/Done';
+import Cancel from '@material-ui/icons/Cancel';
+import connect from 'react-redux/es/connect/connect';
+import {getSingleArticle} from '../action/articleEditAction';
+import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
+import {article_type_data, skin_data} from '../util/data';
 
 const ca_data = [
   {
-    title: "一级栏目1",
-    id: "1",
+    title: '一级栏目1',
+    id: '1',
     child: [
       {
-        title: "二级栏目1",
-        id: "2"
+        title: '二级栏目1',
+        id: '2'
       },
       {
-        title: "二级栏目2",
-        id: "3",
+        title: '二级栏目2',
+        id: '3',
         child: [{
-          title: "三级栏目1",
-          id: "4"
+          title: '三级栏目1',
+          id: '4'
         }, {
-          title: "三级栏目2",
-          id: "5"
+          title: '三级栏目2',
+          id: '5'
         }]
       }
     ]
   }, {
-    title: "一级栏目_2",
-    id: "6"
-  }
-];
-const article_type_data = [
-  {
-    name: "主页文章",
-    id: 1
-  }, {
-    name: "轮播图",
-    id: 2
-  }, {
-    name: "普通文章",
-    id: 3
+    title: '一级栏目_2',
+    id: '6'
   }
 ];
 
-const skin_data = [
-  {
-    name: "粉红",
-    id: 1
-  }, {
-    name: "骚紫",
-    id: 2
-  }, {
-    name: "靓蓝",
-    id: 3
-  }
-];
 
 const styles = theme => ({
     root: {
@@ -79,11 +54,11 @@ const styles = theme => ({
       padding: theme.spacing.unit * 5
     },
     text_field: {
-      margin: "10px",
-      minWidth: "200px"
+      margin: '10px',
+      minWidth: '200px'
     },
     dialog_paper: {
-      minWidth: "300px"
+      minWidth: '300px'
     }
   })
 ;
@@ -94,6 +69,7 @@ class ArticleEdit extends React.Component {
   static propTypes = {
     articleId: PropTypes.string,
     classes: PropTypes.object,
+    isFetching: PropTypes.bool.isRequired,
     dispatch: PropTypes.func,
     article: PropTypes.object
   };
@@ -103,7 +79,7 @@ class ArticleEdit extends React.Component {
     this.state = {
       ca_select_open: false,
       category_id: null,
-      category_title: "",
+      category_title: '',
       skin_id: -1,
       type_id: -1
     };
@@ -111,21 +87,21 @@ class ArticleEdit extends React.Component {
 
 
   componentDidMount() {
-
+    const dispatch = this.props.dispatch;
     const articleId = parseInt(this.props.match.params.id);
     dispatch(getSingleArticle(articleId));
-    const { article } = this.props;
+    // const {article} = this.props;
     // const article_type_id = article_type_data.findIndex(e => e.name === article.articleType);
-    this.setState({
-      article
-    });
+    // this.setState({
+    //   article
+    // });
   }
 
   handleEditorContent(content) {
     this.setState(prevState => ({
       article: {
         ...prevState.article,
-        "articleContent": content
+        'articleContent': content
       }
     }));
   }
@@ -157,8 +133,8 @@ class ArticleEdit extends React.Component {
 
   render() {
 
-    const { classes, article, isFetching } = this.props;
-    const { ca_select_open, skin_id, category_title, type_id } = this.state;
+    const {classes, article, isFetching} = this.props;
+    const {ca_select_open, skin_id, category_title, type_id} = this.state;
     if (isFetching) {
       return <LinearProgress color="secondary"/>;
     }
@@ -177,7 +153,7 @@ class ArticleEdit extends React.Component {
             placeholder='请输入标题'
             required={true}
             value={article.articleTitle}
-            onChange={this.handleChange("articleTitle")}
+            onChange={this.handleChange('articleTitle')}
           />
 
           <TextField
@@ -186,7 +162,7 @@ class ArticleEdit extends React.Component {
             margin='normal'
             placeholder='请输入数字'
             value={article.articleOrder}
-            onChange={this.handleChange("articleOrder")}
+            onChange={this.handleChange('articleOrder')}
           />
           {/*
 
@@ -237,7 +213,7 @@ class ArticleEdit extends React.Component {
             margin='normal'
             placeholder='请输入皮肤名字'
             value={article.articleSkin}
-            onChange={this.handleChange("articleSkin")}
+            onChange={this.handleChange('articleSkin')}
           />
 
 
@@ -251,7 +227,7 @@ class ArticleEdit extends React.Component {
             placeholder='请输入文章来源'
             required={true}
             value={article.articleAuthor}
-            onChange={this.handleChange("articleAuthor")}
+            onChange={this.handleChange('articleAuthor')}
           />
           <TextField
             className={classes.text_field}
@@ -261,7 +237,7 @@ class ArticleEdit extends React.Component {
             required={true}
             helperText='Click to select category'
             value={category_title}
-            onClick={() => this.setState({ ca_select_open: true })}
+            onClick={() => this.setState({ca_select_open: true})}
           >
           </TextField>
 
@@ -271,7 +247,7 @@ class ArticleEdit extends React.Component {
                 paper: classes.dialog_paper
               }
             }
-            onClose={() => this.setState({ ca_select_open: false })}
+            onClose={() => this.setState({ca_select_open: false})}
             open={ca_select_open}>
             <DialogTitle>选择栏目</DialogTitle>
             <Tree data={ca_data} onSelect={this.onSelectCa}/>
@@ -307,22 +283,22 @@ class ArticleEdit extends React.Component {
             placeholder='请输入文章描述'
             required={true}
             value={article.articleDesc}
-            onChange={this.handleChange("articleDesc")}
+            onChange={this.handleChange('articleDesc')}
           />
         </div>
 
-        <div style={{ margin: "20px 0 20px 0" }}>
+        <div style={{margin: '20px 0 20px 0'}}>
           <CommonUpload
-            buttonName={"主图上传"}
-            color={"primary"}
-            callback={(f) => alert("已选择:" + f[0].name)}
+            buttonName={'主图上传'}
+            color={'primary'}
+            callback={(f) => alert('已选择:' + f[0].name)}
             icon={<CloudUploadIcon/>}
           />
           <CommonUpload
-            buttonName={"附件上传"}
-            color={"primary"}
+            buttonName={'附件上传'}
+            color={'primary'}
             multiple={true}
-            callback={(fs) => Array.from(fs).map(f => (alert("已选择:" + f.name)))}
+            callback={(fs) => Array.from(fs).map(f => (alert('已选择:' + f.name)))}
             icon={<CloudUploadIcon/>}
           />
         </div>
@@ -334,22 +310,22 @@ class ArticleEdit extends React.Component {
 
 
         <Button
-          style={{ margin: "10px" }}
+          style={{margin: '10px'}}
           color='primary'
           variant="contained"
         >
-          <Typography color="inherit" style={{ paddingRight: "10px" }}>
+          <Typography color="inherit" style={{paddingRight: '10px'}}>
             立即提交
           </Typography>
           <Done/>
         </Button>
 
         <Button
-          style={{ margin: "10px" }}
+          style={{margin: '10px'}}
           color='primary'
           variant="contained"
         >
-          <Typography color="inherit" style={{ paddingRight: "10px" }}>
+          <Typography color="inherit" style={{paddingRight: '10px'}}>
             重置
           </Typography>
           <Cancel/>
@@ -362,8 +338,7 @@ class ArticleEdit extends React.Component {
 
 const mapStateToProps = state => ({
   isFetching: state.articleEdit.isFetching,
-  article: state.articleEdit.data
+  article: state.articleEdit.data.article,
 });
-
 
 export default withStyles(styles)(connect(mapStateToProps)(ArticleEdit));

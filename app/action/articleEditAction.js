@@ -1,29 +1,23 @@
-import { createAction } from "redux-actions";
-import { ARTICLE_LIST, ARTICLE_LIST_HEADER, MOCK_DB_getArticle } from "../mock/article/article_list";
+import {createAction} from 'redux-actions';
+import {ACCESS_TOKEN, URL_ARTICLE_PRE} from '../util/data';
 
-const requestSingleArticle = createAction("REQUEST_SINGLE_ARTICLE");
-const receiveSingleArticle = createAction("RECEIVE_SINGLE_ARTICLE");
-
+const requestSingleArticle = createAction('REQUEST_SINGLE_ARTICLE');
+const receiveSingleArticle = createAction('RECEIVE_SINGLE_ARTICLE');
 export const fetchSingleArticle = articleId => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve({
-        article: ARTICLE_LIST[0]
-      });
-    }, 1000);
-  });
-  // console.log(articleId);
-  // return fetch("http://smy.xkenmon.cn:9080/article/345")
-  //   .then(response => {
-  //       if (response.ok) {
-  //         return response.json();
-  //       }
-  //       throw new Error("请求错误:" + response.status);
-  //     }
-  //   )
-  //   .catch(error => {
-  //     console.log(`error: ${error.message}`);
-  //   });
+  return fetch(`${URL_ARTICLE_PRE}/${articleId}`, {
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)
+    })
+  })
+    .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error('请求错误:' + response.status);
+      }
+    )
+    .then(article => ({article: article}));
 };
 
 export function getSingleArticle(articleId) {

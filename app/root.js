@@ -1,4 +1,4 @@
-import { lightBlue, pink } from '@material-ui/core/colors';
+import {lightBlue, pink} from '@material-ui/core/colors';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import ArchiveIcon from '@material-ui/icons/Archive';
@@ -11,11 +11,11 @@ import SettingsApplicationIcon from '@material-ui/icons/SettingsApplications';
 import StorageIcon from '@material-ui/icons/Storage';
 import SuperVisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import React from 'react';
-import Route from 'react-router-dom/Route';
 import PersistentDrawer from './components/PersistentNavBar';
-import Table from './components/Table';
 import navRouters from './router/NavRouters';
 import './styles/style.less';
+import {IS_LOGINED} from './util/data';
+import Login from './Login';
 
 const NavList = [
   {
@@ -82,10 +82,10 @@ export default class RootApp extends React.Component {
     return (
       <MuiThemeProvider theme={theme}>
         <div>
-          <PersistentDrawer data={NavList} router={navRouters}/>
-          <div className='content'>
-            <Route path='/table_example' component={Table}/>
-          </div>
+          {
+            window.sessionStorage.getItem(IS_LOGINED) ?
+              <PersistentDrawer data={NavList} router={navRouters}/> : <Login/>
+          }
         </div>
       </MuiThemeProvider>
     );

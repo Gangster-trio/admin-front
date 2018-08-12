@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -12,13 +12,17 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { Route } from 'react-router-dom';
+import {Route} from 'react-router-dom';
 import ListItem from '@material-ui/core/ListItem/ListItem';
 import ListItemText from '@material-ui/core/ListItemText/ListItemText';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse/Collapse';
 import NavLink from 'react-router-dom/es/NavLink';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import {logout} from '../action/AuthAction';
 
 const drawerWidth = 240;
 
@@ -113,6 +117,18 @@ const styles = theme => ({
   list_item: {
     padding: '12px',
   },
+  row: {
+    // display: 'flex',
+    // justifyContent: 'center',
+  },
+  avatar: {
+    margin: 10,
+    float: 'right'
+  },
+  bigAvatar: {
+    width: 60,
+    height: 60,
+  },
 });
 
 class PersistentDrawer extends React.Component {
@@ -135,15 +151,28 @@ class PersistentDrawer extends React.Component {
     this.state = {
       open: false,
       anchor: 'left',
+      anchorEl: null,
     };
   }
 
+  handleClick = event => {
+    this.setState({anchorEl: event.currentTarget});
+  };
+
+  // 关闭然后登出
+  handleClose = name => () => {
+    this.setState({anchorEl: null});
+    if (name === 'logout') {
+      logout();
+    }
+  };
+
   handleDrawerOpen = () => {
-    this.setState({ open: true });
+    this.setState({open: true});
   };
 
   handleDrawerClose = () => {
-    this.setState({ open: false });
+    this.setState({open: false});
   };
 
   isLiExpand = v => {
@@ -173,7 +202,7 @@ class PersistentDrawer extends React.Component {
           button
         >
           {item.icon}
-          <ListItemText inset primary={item.text} />
+          <ListItemText inset primary={item.text}/>
         </ListItem>
       );
     }
@@ -189,8 +218,8 @@ class PersistentDrawer extends React.Component {
           className={this.props.classes.list_item}
         >
           {item.icon}
-          <ListItemText inset primary={item.text} />
-          {this.isLiExpand(item) ? <ExpandLess /> : <ExpandMore />}
+          <ListItemText inset primary={item.text}/>
+          {this.isLiExpand(item) ? <ExpandLess/> : <ExpandMore/>}
         </ListItem>
         <Collapse in={this.isLiExpand(item)} timeout="auto" unmountOnExit>
           <List>
@@ -203,7 +232,7 @@ class PersistentDrawer extends React.Component {
                 button
               >
                 {v.icon}
-                <ListItemText inset primary={v.text} />
+                <ListItemText inset primary={v.text}/>
               </ListItem>
             ))}
           </List>
@@ -213,8 +242,8 @@ class PersistentDrawer extends React.Component {
   }
 
   render() {
-    const { classes, theme, data, router } = this.props;
-    const { anchor, open } = this.state;
+    const {classes, theme, data, router} = this.props;
+    const {anchor, open, anchorEl} = this.state;
 
     const drawer = (
       <Drawer
@@ -230,10 +259,10 @@ class PersistentDrawer extends React.Component {
             Gangster-CMS
           </Typography>
           <IconButton onClick={this.handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {theme.direction === 'rtl' ? <ChevronRightIcon/> : <ChevronLeftIcon/>}
           </IconButton>
         </div>
-        <Divider />
+        <Divider/>
         <List>{data.map(v => this.renderListItem(v))}</List>
       </Drawer>
     );
@@ -254,11 +283,30 @@ class PersistentDrawer extends React.Component {
                 onClick={this.handleDrawerOpen}
                 className={classNames(classes.menuButton, open && classes.hide)}
               >
-                <MenuIcon />
+                <MenuIcon/>
               </IconButton>
               <Typography variant="title" color="inherit" noWrap>
                 后台管理系统
               </Typography>
+              <div style={{position: 'absolute', right: 10}}>
+                <IconButton
+                  aria-owns={anchorEl ? 'simple-menu' : null}
+                  aria-haspopup="true"
+                  onClick={this.handleClick}
+                >
+                  <AccountCircleIcon/>
+                </IconButton>
+                <Menu
+                  id="simple-menu"
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={this.handleClose}
+                >
+                  <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+                  <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                  <MenuItem onClick={this.handleClose('logout')}>Logout</MenuItem>
+                </Menu>
+              </div>
             </Toolbar>
           </AppBar>
           {drawer}
@@ -268,10 +316,10 @@ class PersistentDrawer extends React.Component {
               [classes[`mainShift-${anchor}`]]: open,
             })}
           >
-            <div className={classes.drawerHeader} />
+            <div className={classes.drawerHeader}/>
             <div className={classes.content}>
               {router.map(v => (
-                <Route key={v.path} path={v.path} component={v.component} />
+                <Route key={v.path} path={v.path} component={v.component}/>
               ))}
             </div>
           </main>
@@ -281,4 +329,4 @@ class PersistentDrawer extends React.Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(PersistentDrawer);
+export default withStyles(styles, {withTheme: true})(PersistentDrawer);

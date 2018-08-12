@@ -1,21 +1,22 @@
-import React from "react";
-import BraftEditor from "braft-editor";
-import "../styles/braft-editor.css";
-import PropTypes from "prop-types";
+import React from 'react';
+import BraftEditor from 'braft-editor';
+import '../styles/braft-editor.css';
+import PropTypes from 'prop-types';
+import {fetchUploadCdnDomain, fetchUploadToken} from '../action/fileUploadAction';
+import * as qiniu from 'qiniu-js';
 
 class Editor extends React.Component {
 
 
   static propTypes = {
     handleEditorContent: PropTypes.func.isRequired,
-    handleImgUpload: PropTypes.func.isRequired
   };
 
 
   constructor(props) {
     super(props);
     this.state = {
-      content: ""
+      content: ''
     };
   }
 
@@ -29,16 +30,43 @@ class Editor extends React.Component {
   };
 
 
-  // 图片上传,param中包含了文件file对象
-  handleImgUpload = (param) => {
-    this.props.handleImgUpload(param);
-  };
+  async handleImgUpload(param) {
+    let cdnDomain = await fetchUploadCdnDomain();
+    let token = await fetchUploadToken();
+    let config = {
+      useCdnDomain: true,
+    };
+    let putExtra = {
+      params: {},
+    };
+    let next = (response) => {
+      param.progress(response.total.percent);
+    };
+    let observable = qiniu.upload(param.file, null, token, putExtra, config);
+    observable.subscribe(
+      next,
+      () => {
+        param.error({
+          msg: 'unable to upload'
+        });
+      },
+      (complete) => {
+        param.success({
+          url: cdnDomain + '/' + complete.key,
+          meta: {
+            id: 'img',
+            title: 'editor',
+            alt: 'xxx',
+          }
+        });
+      });
+  }
 
   render() {
     const editorProps = {
       height: 500,
-      contentFormat: "html",
-      initialContent: "<p>Hello World!</p>",
+      contentFormat: 'html',
+      initialContent: '',
       onChange: this.handleChange,
       media: {
         allowPasteImage: true, // 剪切图
@@ -48,7 +76,7 @@ class Editor extends React.Component {
     };
 
     return (
-      <div style={{ marginRight: '100px', border: "1px solid rgba(0, 0, 0, 0.25)" }}>
+      <div style={{marginRight: '100px', border: '1px solid rgba(0, 0, 0, 0.25)'}}>
         <BraftEditor {...editorProps}/>
       </div>
     );

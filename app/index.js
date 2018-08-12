@@ -1,16 +1,22 @@
-import { render } from 'react-dom';
+import {render} from 'react-dom';
 import RootApp from './root';
 import store from './store';
 import React from 'react';
-import BrowserRouter from 'react-router-dom/es/BrowserRouter';
-import Route from 'react-router-dom/es/Route';
+import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import Provider from 'react-redux/es/components/Provider';
+import Login from './Login';
 
 render(
   <Provider store={store}>
     <BrowserRouter>
-      <Route path="/" component={RootApp} />
+      <div>
+        <Switch>
+          <Route path="/login" component={Login}/>
+          <Route path="/" component={RootApp}/>
+        </Switch>
+      </div>
     </BrowserRouter>
-  </Provider>,
+  </Provider>
+  ,
   document.getElementById('root'),
 );

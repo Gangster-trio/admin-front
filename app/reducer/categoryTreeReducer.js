@@ -1,12 +1,12 @@
 import {handleActions} from 'redux-actions';
 
-export const articleListReducer = handleActions(
+export const categoryTreeReducer = handleActions(
   {
-    REQUEST_ARTICLE_LIST: state => ({
+    REQUEST_CATEGORY_TREE: state => ({
       ...state,
       isFetching: true
     }),
-    RECEIVE_ARTICLE_LIST: (state, action) => ({
+    RECEIVE_CATEGORY_TREE: (state, action) => ({
       ...state,
       isFetching: false,
       data: action.payload
@@ -14,6 +14,6 @@ export const articleListReducer = handleActions(
   },
   {
     isFetching: true,
-    data: []
+    data: {}
   }
 );

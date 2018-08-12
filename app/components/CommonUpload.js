@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button/Button';
-import { generateId } from '../util/randomHash';
+import {generateId} from '../util/randomHash';
 import Typography from '@material-ui/core/Typography/Typography';
 
 class CommonUpload extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       inputId: props.inputId === undefined ? generateId(10) : props.inputId
@@ -21,6 +21,7 @@ class CommonUpload extends React.Component {
     callback: PropTypes.func.isRequired,
     icon: PropTypes.object,
     inputId: PropTypes.string,
+    file_type: PropTypes.string.isRequired
   };
 
   static defaultProps = {
@@ -28,10 +29,11 @@ class CommonUpload extends React.Component {
   };
 
   handleFileUpload = e => {
-    this.props.callback(e.target.files);
+    const {file_type} = this.props;
+    this.props.callback(file_type, e.target.files);
   };
 
-  render () {
+  render() {
     const {buttonName, multiple, icon} = this.props;
     const {inputId} = this.state;
     return (
