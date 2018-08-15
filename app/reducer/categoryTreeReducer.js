@@ -1,4 +1,4 @@
-import {handleActions} from 'redux-actions';
+import { handleActions } from 'redux-actions';
 
 export const categoryTreeReducer = handleActions(
   {
@@ -14,6 +14,6 @@ export const categoryTreeReducer = handleActions(
   },
   {
     categoryTreeIsFetching: true,
-    data: {}
+    data: []
   }
 );

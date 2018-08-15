@@ -8,7 +8,7 @@ export const article_type_data = [
   }
 ].map(suggestion => ({
   value: suggestion.label,
-  label: suggestion.label,
+  label: suggestion.label
 }));
 
 
@@ -25,35 +25,24 @@ export const skin_data = [
   }
 ];
 
-const URL_PRE = 'http://smy.xkenmon.cn:8080';
-
-export const ARTICLE_URL = `${URL_PRE}/article`;
-
-export const CATEGORY_TREE_URL = `${URL_PRE}/category/tree`;
-
-export const HTTP_ADDR_URL = `${URL_PRE}/qiniu/upHttpAddr`;
-
-export const HTTP_TOKEN_URL = `${URL_PRE}/qiniu/upToken`;
-
-export const HTTP_DOMAIN_URL = `${URL_PRE}/qiniu/cdnDomain`;
-
-export const FETCH_LOGIN_TOKEN_URL = `${URL_PRE}/auth`;
-
-export const CATEGORY_URL = `${URL_PRE}/category`;
-
-export const LOGIN_URL = `${URL_PRE}/login`;
-
-
-export const ACCESS_TOKEN = 'accessToken';
-
-export const FIRST_LOAD_PAGE = 'firsLoadPage';
-
-export const TIMER_ID = 'timer_id';
-
 export const USER_INFO = 'USER_INFO';
 
 export const IS_LOGINED = 'IS_LOGINED';
 
+export const ACCESS_TOKEN = 'accessToken';
 
-// 超时设置
-// export const TIME_OUT_LIMIT = 255000;
+export const ARTICLE_INDEX = '/article_list';
+
+const URL_PRE = 'http://smy.xkenmon.cn:8080';
+
+export const ARTICLE_URL = `${URL_PRE}/article`;
+
+export const CATEGORY_URL = `${URL_PRE}/category`;
+
+export const FETCH_LOGIN_TOKEN_URL = `${URL_PRE}/auth`;
+
+export const HTTP_TOKEN_URL = `${URL_PRE}/qiniu/upToken`;
+
+export const CATEGORY_TREE_URL = `${URL_PRE}/category/tree`;
+
+export const HTTP_DOMAIN_URL = `${URL_PRE}/qiniu/cdnDomain`;

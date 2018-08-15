@@ -6,7 +6,7 @@ export const articleAddReducer = handleActions(
       ...state,
       isAdding: true
     }),
-    RECEIVE_CREATE_ARTICLE: (state, action) => ({
+    RESPONSE_CREATE_ARTICLE: (state, action) => ({
       ...state,
       isAdding: false,
       data: action.payload

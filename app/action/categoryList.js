@@ -1,5 +1,5 @@
-import {createAction} from 'redux-actions';
-import {ACCESS_TOKEN, CATEGORY_TREE_URL} from '../util/data';
+import { createAction } from 'redux-actions';
+import { ACCESS_TOKEN, CATEGORY_TREE_URL } from '../util/data';
 
 const requestCategoryTree = createAction('REQUEST_CATEGORY_TREE');
 const receiveCategoryTree = createAction('RECEIVE_CATEGORY_TREE');
@@ -17,8 +17,7 @@ export const fetchCategoryTree = () => {
         }
         throw new Error('请求错误:' + response.status);
       }
-    )
-    .then(categoryTree => (categoryTree));
+    );
 };
 
 export function getCategoryTree() {

@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle/DialogTitle';
-import {Tree} from '../components/Tree';
+import { Tree } from '../components/Tree';
 import MenuItem from '@material-ui/core/MenuItem/MenuItem';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CommonUpload from '../components/CommonUpload';
@@ -13,17 +13,14 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Button from '@material-ui/core/Button/Button';
 import Editor from '../components/Editor';
 import Done from '@material-ui/icons/Done';
-import {getCategoryTree} from '../action/categoryList';
-import {connect} from 'react-redux';
+import { getCategoryTree } from '../action/categoryList';
+import { connect } from 'react-redux';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
-import SingleSelect, {ADD_OPERATION} from '../components/SingleSelect';
-import {article_type_data} from '../util/data';
-import {addArticle} from '../action/articleAddAction';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogActions from '@material-ui/core/DialogActions';
-import Snackbar from '@material-ui/core/Snackbar';
-import {SnackbarContentWrapper} from '../components/PositionedSnackbar';
+import SingleSelect, { ADD_OPERATION } from '../components/SingleSelect';
+import { ARTICLE_INDEX, article_type_data } from '../util/data';
+import { addArticle } from '../action/articleAddAction';
+import Dialogs from '../components/Dialogs';
+import CustomizedSnackbars from '../components/Snackbars';
 
 const skin_data = [
   {
@@ -61,44 +58,41 @@ const initState = {
   skin_id: -1,
   type_id: '',
   article: {
-    'articleAuthor': '',
-    'articleCategoryId': '',
-    'articleContent': '',
-    'articleCreateTime': '',
-    'articleDesc': '',
+    'articleAuthor': null,
+    'articleCategoryId': null,
+    'articleContent': null,
+    'articleCreateTime': null,
+    'articleDesc': null,
     'articleHit': 0,
-    'articleId': '',
-    'articleInHomepage': '',
-    'articleOrder': '',
-    'articleReleaseStatus': '',
-    'articleReleaseTime': '',
-    'articleSiteId': '',
-    'articleSkin': '',
+    'articleId': null,
+    'articleInHomepage': null,
+    'articleOrder': null,
+    'articleReleaseStatus': null,
+    'articleReleaseTime': null,
+    'articleSiteId': null,
+    'articleSkin': null,
     'articleStatus': 0,
-    'articleThumb': '',
-    'articleTitle': '',
-    'articleType': '',
-    'articleUpdateTime': '',
-    'articleUrl': ''
+    'articleThumb': null,
+    'articleTitle': null,
+    'articleType': null,
+    'articleUpdateTime': null,
+    'articleUrl': null
   },
   all_files: {
     img: null,
     files: null
   },
-  alertOpen: false,  // 用户点击提交按钮后，弹出的确认提交框是否显示  操作变量
-  snackBarTag: false,  // 提交给予的反馈
-  isValidOnSubmit: false    //   用户点击按钮之后验证是否有效
+  isSubmitting: false,
+  addSuccess: undefined    // 设置文章是否上传成功,没有上传，就为undefined
 };
 
 class ArticleAdd extends React.Component {
   static propTypes = {
-    classes: PropTypes.object,
-    dispatch: PropTypes.func,
     ca_data: PropTypes.array,
-    isAdding: PropTypes.bool.isRequired,
-    categoryTreeIsFetching: PropTypes.bool.isRequired,
-    categoryIsFetching: PropTypes.bool.isRequired,
-    callbackMessage: PropTypes.number
+    callbackMessage: PropTypes.object,
+    dispatch: PropTypes.func.isRequired,
+    classes: PropTypes.object.isRequired,
+    categoryTreeIsFetching: PropTypes.bool.isRequired
   };
 
 
@@ -125,6 +119,9 @@ class ArticleAdd extends React.Component {
     dispatch(getCategoryTree());
   }
 
+  componentWillUnmount() {
+    this.setState(initState);
+  }
 
   handleChange = name => (event) => {
     const value = event.target.value;
@@ -145,16 +142,16 @@ class ArticleAdd extends React.Component {
     }));
   };
 
-  handleEditorContent(content) {
+  handleEditorContent = (content) => {
     this.setState(prevState => ({
       article: {
         ...prevState.article,
         articleContent: content
       }
     }));
-  }
+  };
 
-  handleAllFileUpload(item, file) {
+  handleAllFileUpload = (item, file) => {
     if (file) {
       if (item === 'img') {
         file = file[0];
@@ -166,44 +163,40 @@ class ArticleAdd extends React.Component {
         }
       }));
     }
-  }
-
-  handleConfirmFrameOpen = () => {
-    this.setState({alertOpen: true});
   };
 
-
-  handleConfirmFrameClose = () => {
-    this.setState({alertOpen: false});
-  };
-
-
-  handleSnackBarClose = () => {
-    this.setState({snackBarTag: false});
-  };
 
   handleValid = () => {
-    let article = this.state.article;
+    const { article } = this.state;
+    this.setState({
+      isSubmitting: true    // 将当前状态修改为正在提交状态，用来验证输入的有效性
+    });
+    if (article.articleType) {
+    }
     return !!(article.articleTitle && article.articleAuthor && article.articleCategoryId && article.articleType);
   };
 
 
-  handleSubmit() {
-    this.handleConfirmFrameClose();
-    const {article, all_files} = this.state;
+  async handleSubmit() {
+    const { dispatch } = this.props;
+    const { article, all_files } = this.state;
     if (this.handleValid()) {
-      this.props.dispatch(addArticle({article, all_files}));
+      await dispatch(addArticle({ article, all_files }));
+      const { callbackMessage } = this.props;
+      let status;
+      callbackMessage.code === 200 ? status = 'success' : status = 'failed';
+      this.setState({
+        addSuccess: status
+      });
+      this.child.handleClick();
+    } else {
+      alert('请填写必要字段');
     }
-    this.setState({
-      snackBarTag: true,
-      isValidOnSubmit: true
-    });
-    window.location.href = '/article_list';
   }
 
   render() {
-    const {classes, ca_data, categoryTreeIsFetching, callbackMessage} = this.props;
-    const {ca_select_open, category_title, skin_id, article, isValidOnSubmit} = this.state;
+    const { classes, ca_data, categoryTreeIsFetching } = this.props;
+    const { ca_select_open, category_title, skin_id, article, isSubmitting, addSuccess } = this.state;
 
     if (categoryTreeIsFetching) {
       return <LinearProgress color="secondary"/>;
@@ -221,7 +214,7 @@ class ArticleAdd extends React.Component {
             margin='normal'
             placeholder='请输入标题'
             required={true}
-            error={isValidOnSubmit && !article.articleTitle}
+            error={isSubmitting && !article.articleTitle}
             onChange={this.handleChange('articleTitle')}
           />
 
@@ -259,7 +252,7 @@ class ArticleAdd extends React.Component {
             placeholder='请输入文章来源'
             required={true}
             onChange={this.handleChange('articleAuthor')}
-            error={isValidOnSubmit && !article.articleAuthor}
+            error={isSubmitting && !article.articleAuthor}
           />
 
         </div>
@@ -272,8 +265,8 @@ class ArticleAdd extends React.Component {
             required={true}
             helperText='Click to select category'
             value={category_title}
-            error={isValidOnSubmit && !article.articleCategoryId}
-            onClick={() => this.setState({ca_select_open: true})}
+            error={isSubmitting && !article.articleCategoryId}
+            onClick={() => this.setState({ ca_select_open: true })}
           >
           </TextField>
           <Dialog
@@ -282,7 +275,7 @@ class ArticleAdd extends React.Component {
                 paper: classes.dialog_paper
               }
             }
-            onClose={() => this.setState({ca_select_open: false})}
+            onClose={() => this.setState({ ca_select_open: false })}
             open={ca_select_open}>
             <DialogTitle>选择栏目</DialogTitle>
             <Tree data={ca_data} onSelect={this.onSelectCa} title="categoryTitle"/>
@@ -311,8 +304,6 @@ class ArticleAdd extends React.Component {
           </TextField>
 
 
-          {/*标签待添加*/}
-
           <TextField
             className={classes.text_field}
             label='文章描述'
@@ -324,12 +315,12 @@ class ArticleAdd extends React.Component {
         </div>
 
 
-        <div style={{margin: '20px 0 20px 0'}}>
+        <div style={{ margin: '20px 0 20px 0' }}>
           <CommonUpload
             buttonName={'主图上传'}
             color={'primary'}
             file_type='img'
-            callback={this.handleAllFileUpload.bind(this)}
+            callback={this.handleAllFileUpload}
             icon={<CloudUploadIcon/>}
           />
           <CommonUpload
@@ -337,85 +328,58 @@ class ArticleAdd extends React.Component {
             color={'primary'}
             multiple={true}
             file_type='files'
-            callback={this.handleAllFileUpload.bind(this)}
+            callback={this.handleAllFileUpload}
             icon={<CloudUploadIcon/>}
           />
         </div>
         <Editor
-          handleEditorContent={this.handleEditorContent.bind(this)}
+          handleEditorContent={this.handleEditorContent}
           initialContent=''/>
+
+        <Dialogs
+          ref={instance => {
+            this.child = instance;
+          }}
+          title={'From Gangster Cms Message'}
+          contentText={`确定添加文章标题为: ${article.articleTitle}的文章?`}
+          onEventSubmit={this.handleSubmit.bind(this)}
+        />
+
+        {
+          addSuccess !== undefined ?
+            <CustomizedSnackbars
+              ref={instance => {
+                this.child = instance;
+              }}
+              variant={addSuccess}
+              message={addSuccess ? '添加成功' : '添加失败'}
+              redirect={ARTICLE_INDEX}
+            />
+            :
+            null
+        }
         <Button
-          style={{margin: '10px'}}
+          style={{ margin: '10px' }}
           color='primary'
           variant="contained"
-          onClick={this.handleConfirmFrameOpen}
-          // onClick={this.handleSubmit.bind(this)}
+          onClick={() => {
+            this.child.handleClickOpen();
+          }}
         >
-          <Typography color="inherit" style={{paddingRight: '10px'}}>
+          <Typography color="inherit" style={{ paddingRight: '10px' }}>
             立即提交
           </Typography>
           <Done/>
         </Button>
 
-
-        <Dialog
-          open={this.state.alertOpen}
-          onClose={this.handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{'From Gangster CMS Reminder'}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              确定添加文章：{this.state.article.articleTitle}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleConfirmFrameClose} color="primary">
-              返回
-            </Button>
-            <Button onClick={this.handleSubmit.bind(this)} color="primary" autoFocus>
-              确定
-            </Button>
-          </DialogActions>
-        </Dialog>
-        {
-          callbackMessage !== undefined ?
-            <Snackbar
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={this.state.snackBarTag}
-              autoHideDuration={3000}
-              onClose={this.handleSnackBarClose}
-            >
-              {
-                callbackMessage.code === 200 ?
-                  <SnackbarContentWrapper
-                    onClose={this.handleSnackBarClose}
-                    variant="success"
-                    message="更新文章成功!"
-                  />
-                  :
-                  <SnackbarContentWrapper
-                    onClose={this.handleSnackBarClose}
-                    variant="error"
-                    message="更新文章失败!"
-                  />
-              }
-            </Snackbar>
-            : null
-        }
         <Button
-          style={{margin: '10px'}}
+          style={{ margin: '10px' }}
           color='primary'
           variant='contained'
         >
-          <Typography color='inherit' style={{paddingRight: '10px'}}>
+          <Typography color='inherit' style={{ paddingRight: '10px' }}>
             重置
           </Typography>
-
         </Button>
       </Paper>
     );
@@ -423,11 +387,9 @@ class ArticleAdd extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    ca_data: state.categoryTreeList.data.tree,
-    isAdding: state.articleAdd.isAdding,
-    categoryIsFetching: state.categoryGet.categoryIsFetching,
-    categoryTreeIsFetching: state.categoryTreeList.categoryTreeIsFetching,
-    callbackMessage: state.articleAdd.data.msg
+    ca_data: state.categoryTreeList.data,
+    callbackMessage: state.articleAdd.data,
+    categoryTreeIsFetching: state.categoryTreeList.categoryTreeIsFetching
   })
 ;
 

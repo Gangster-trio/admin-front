@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle/DialogTitle';
-import {Tree} from '../components/Tree';
+import { Tree } from '../components/Tree';
 import MenuItem from '@material-ui/core/MenuItem/MenuItem';
 import CommonUpload from '../components/CommonUpload';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
@@ -15,10 +15,12 @@ import Button from '@material-ui/core/Button/Button';
 import Done from '@material-ui/icons/Done';
 import Cancel from '@material-ui/icons/Cancel';
 import connect from 'react-redux/es/connect/connect';
-import {article_type_data, skin_data} from '../util/data';
-import SingleSelect, {UPDATE_OPERATION} from '../components/SingleSelect';
+import { ARTICLE_INDEX, article_type_data, skin_data } from '../util/data';
+import SingleSelect, { UPDATE_OPERATION } from '../components/SingleSelect';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
-import {fetchUpdateArticleInfo, updateArticle} from '../action/articleEditAction';
+import { fetchUpdateArticleInfo, updateArticle } from '../action/articleEditAction';
+import Dialogs from '../components/Dialogs';
+import CustomizedSnackbars from '../components/Snackbars';
 
 const styles = theme => ({
     root: {
@@ -45,13 +47,13 @@ const initState = {
   type_id: -1,
   article: null,
   category: null,
-  articleId: null,    // test
   all_files: {
     img: null,
     files: null
   },
   isFetching: true,
-  isSubmitting: false
+  isSubmitting: false,
+  updateSuccess: undefined    // 设置文章是否上传成功,没有上传，就为undefined
 };
 
 class ArticleEdit extends React.Component {
@@ -151,23 +153,33 @@ class ArticleEdit extends React.Component {
   };
 
   handleValid = () => {
+    const { article } = this.state;
     this.setState({
       isSubmitting: true    // 将当前状态修改为正在提交状态，用来验证输入的有效性
     });
+    return !!(article.articleTitle && article.articleAuthor && article.articleCategoryId && article.articleType);
   };
 
   async handleArticleSubmit() {
-    const {article, all_files} = this.state;
-    const {dispatch} = this.props;
-    await dispatch(updateArticle({article, all_files}));
-    const {callbackMessage} = this.props;
-    callbackMessage.code === 200 ? alert('success') : alert('failed');
-    window.location.href = '/article_list';
+    const { article, all_files } = this.state;
+    const { dispatch } = this.props;
+    if (this.handleValid()) {
+      await dispatch(updateArticle({ article, all_files }));
+      const { callbackMessage } = this.props;
+      let status;
+      callbackMessage.code === 200 ? status = 'success' : status = 'failed';
+      this.setState({
+        updateSuccess: status
+      });
+      this.child.handleClick();
+    } else {
+      alert('请填写必要的字段信息');
+    }
   }
 
   render() {
-    const {classes, ca_data} = this.props;
-    const {ca_select_open, skin_id, category_title, article, isSubmitting, isFetching} = this.state;
+    const { classes, ca_data } = this.props;
+    const { ca_select_open, skin_id, category_title, article, isSubmitting, isFetching, updateSuccess } = this.state;
     if (isFetching) {
       return <LinearProgress color="secondary"/>;
     }
@@ -242,7 +254,7 @@ class ArticleEdit extends React.Component {
             helperText='Click to select category'
             value={category_title}
             error={isSubmitting && !article.articleCategoryId}
-            onClick={() => this.setState({ca_select_open: true})}
+            onClick={() => this.setState({ ca_select_open: true })}
           >
           </TextField>
 
@@ -252,7 +264,7 @@ class ArticleEdit extends React.Component {
                 paper: classes.dialog_paper
               }
             }
-            onClose={() => this.setState({ca_select_open: false})}
+            onClose={() => this.setState({ ca_select_open: false })}
             open={ca_select_open}>
             <DialogTitle>选择栏目</DialogTitle>
             <Tree data={ca_data} onSelect={this.onSelectCa} title="categoryTitle"/>
@@ -292,7 +304,7 @@ class ArticleEdit extends React.Component {
           />
         </div>
 
-        <div style={{margin: '20px 0 20px 0'}}>
+        <div style={{ margin: '20px 0 20px 0' }}>
           <CommonUpload
             buttonName={'主图上传'}
             color={'primary'}
@@ -314,24 +326,48 @@ class ArticleEdit extends React.Component {
           handleEditorContent={this.handleEditorContent.bind(this)}
           initialContent={article.articleContent}/>
 
+        <Dialogs
+          ref={instance => {
+            this.child = instance;
+          }}
+          title={'From Gangster Cms Message'}
+          contentText={`确定修改文章标题为: ${article.articleTitle}的文章?`}
+          onEventSubmit={this.handleArticleSubmit.bind(this)}/>
+
+        {
+          updateSuccess !== undefined ?
+            <CustomizedSnackbars
+              ref={instance => {
+                this.child = instance;
+              }}
+              variant={updateSuccess}
+              message={updateSuccess ? '更新成功' : '更新失败'}
+              redirect={ARTICLE_INDEX}
+            />
+            :
+            null
+        }
+
         <Button
-          style={{margin: '10px'}}
+          style={{ margin: '10px' }}
           color='primary'
           variant="contained"
-          onClick={this.handleArticleSubmit.bind(this)}
+          onClick={() => {
+            this.child.handleClickOpen();
+          }}
         >
-          <Typography color="inherit" style={{paddingRight: '10px'}}>
+          <Typography color="inherit" style={{ paddingRight: '10px' }}>
             立即提交
           </Typography>
           <Done/>
         </Button>
 
         <Button
-          style={{margin: '10px'}}
+          style={{ margin: '10px' }}
           color='primary'
           variant="contained"
         >
-          <Typography color="inherit" style={{paddingRight: '10px'}}>
+          <Typography color="inherit" style={{ paddingRight: '10px' }}>
             重置
           </Typography>
           <Cancel/>
