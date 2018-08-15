@@ -13,7 +13,6 @@ import SuperVisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import React from 'react';
 import PersistentDrawer from './components/PersistentNavBar';
 import navRouters from './router/NavRouters';
-import './styles/style.less';
 import {IS_LOGINED} from './util/data';
 import Login from './Login';
 

@@ -1,42 +1,29 @@
-import React from 'react';
-import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField/TextField';
-import Typography from '@material-ui/core/Typography';
+import * as React from 'react';
+import withStyles from '@material-ui/core/styles/withStyles';
 import PropTypes from 'prop-types';
+import Paper from '@material-ui/core/Paper/Paper';
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle/DialogTitle';
 import {Tree} from '../components/Tree';
 import MenuItem from '@material-ui/core/MenuItem/MenuItem';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CommonUpload from '../components/CommonUpload';
-import withStyles from '@material-ui/core/styles/withStyles';
-import Button from '@material-ui/core/Button/Button';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Editor from '../components/Editor';
+import Button from '@material-ui/core/Button/Button';
 import Done from '@material-ui/icons/Done';
-import {getCategoryTree} from '../action/categoryList';
-import {connect} from 'react-redux';
+import Cancel from '@material-ui/icons/Cancel';
+import connect from 'react-redux/es/connect/connect';
+import {article_type_data, skin_data} from '../util/data';
+import SingleSelect, {UPDATE_OPERATION} from '../components/SingleSelect';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
-import SingleSelect, {ADD_OPERATION} from '../components/SingleSelect';
-import {article_type_data} from '../util/data';
-import {addArticle} from '../action/articleAddAction';
+import {fetchUpdateArticleInfo, updateArticle} from '../action/articleEditAction';
+import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogActions from '@material-ui/core/DialogActions';
 import Snackbar from '@material-ui/core/Snackbar';
 import {SnackbarContentWrapper} from '../components/PositionedSnackbar';
-
-const skin_data = [
-  {
-    name: '粉红',
-    id: 1
-  }, {
-    name: '骚紫',
-    id: 2
-  }, {
-    name: '靓蓝',
-    id: 3
-  }
-];
 
 const styles = theme => ({
     root: {
@@ -54,59 +41,47 @@ const styles = theme => ({
   })
 ;
 
-const initState = {
-  category_id: null,
-  ca_select_open: false,
-  category_title: '',
-  skin_id: -1,
-  type_id: '',
-  article: {
-    'articleAuthor': '',
-    'articleCategoryId': '',
-    'articleContent': '',
-    'articleCreateTime': '',
-    'articleDesc': '',
-    'articleHit': 0,
-    'articleId': '',
-    'articleInHomepage': '',
-    'articleOrder': '',
-    'articleReleaseStatus': '',
-    'articleReleaseTime': '',
-    'articleSiteId': '',
-    'articleSkin': '',
-    'articleStatus': 0,
-    'articleThumb': '',
-    'articleTitle': '',
-    'articleType': '',
-    'articleUpdateTime': '',
-    'articleUrl': ''
-  },
-  all_files: {
-    img: null,
-    files: null
-  },
-  alertOpen: false,  // 用户点击提交按钮后，弹出的确认提交框是否显示  操作变量
-  snackBarTag: false,  // 提交给予的反馈
-  isValidOnSubmit: false    //   用户点击按钮之后验证是否有效
-};
 
-class ArticleAdd extends React.Component {
+class ArticleEdit extends React.Component {
+
   static propTypes = {
+    articleId: PropTypes.string,
     classes: PropTypes.object,
+    isFetching: PropTypes.bool.isRequired,
     dispatch: PropTypes.func,
+    article: PropTypes.object,
     ca_data: PropTypes.array,
-    isAdding: PropTypes.bool.isRequired,
-    categoryTreeIsFetching: PropTypes.bool.isRequired,
-    categoryIsFetching: PropTypes.bool.isRequired,
-    callbackMessage: PropTypes.number
+    category: PropTypes.object,
+    isUpdate: PropTypes.bool.isRequired,
+    callbackMessage: PropTypes.object,
   };
-
 
   constructor(props) {
     super(props);
-    this.state = initState;
+    this.state = {
+      ca_select_open: false,
+      category_id: null,
+      old_category: null,
+      category_title: '',
+      skin_id: -1,
+      type_id: -1,
+      article: null,
+      category: null,
+      articleId: null,    // test
+      all_files: {
+        img: null,
+        files: null
+      },
+      snackBarTag: false,  // 提交给予的反馈
+      alertOpen: false,   // 用户点击提交按钮后，弹出的确认提交框是否显示  操作变量
+      isValidOnSubmit: false    //   用户点击按钮之后验证是否有效
+    };
   }
 
+  componentDidMount() {
+
+    this.props.dispatch(fetchUpdateArticleInfo());
+  }
 
   onSelectCa = (data) => {
     this.setState(prevState => ({
@@ -120,11 +95,6 @@ class ArticleAdd extends React.Component {
     }));
   };
 
-  componentDidMount() {
-    const dispatch = this.props.dispatch;
-    dispatch(getCategoryTree());
-  }
-
 
   handleChange = name => (event) => {
     const value = event.target.value;
@@ -136,6 +106,7 @@ class ArticleAdd extends React.Component {
     }));
   };
 
+
   handleSelectValue = (item, value) => {
     this.setState(prevState => ({
       article: {
@@ -144,6 +115,7 @@ class ArticleAdd extends React.Component {
       }
     }));
   };
+
 
   handleEditorContent(content) {
     this.setState(prevState => ({
@@ -168,6 +140,24 @@ class ArticleAdd extends React.Component {
     }
   }
 
+  handleValid = () => {
+    let article = this.state.article;
+    return !!(article.articleTitle && article.articleAuthor && article.articleCategoryId && article.articleType);
+  };
+
+  handleSubmit() {
+    this.handleConfirmFrameClose();
+    const {article, all_files} = this.state;
+    if (this.handleValid()) {
+      this.props.dispatch(updateArticle({article, all_files}));
+    }
+    this.setState({
+      snackBarTag: true,
+      isValidOnSubmit: true
+    });
+    console.log(this.props.callbackMessage);
+  }
+
   handleConfirmFrameOpen = () => {
     this.setState({alertOpen: true});
   };
@@ -182,39 +172,26 @@ class ArticleAdd extends React.Component {
     this.setState({snackBarTag: false});
   };
 
-  handleValid = () => {
-    let article = this.state.article;
-    return !!(article.articleTitle && article.articleAuthor && article.articleCategoryId && article.articleType);
-  };
-
-
-  handleSubmit() {
-    this.handleConfirmFrameClose();
-    const {article, all_files} = this.state;
-    if (this.handleValid()) {
-      this.props.dispatch(addArticle({article, all_files}));
-    }
-    this.setState({
-      snackBarTag: true,
-      isValidOnSubmit: true
-    });
-    window.location.href = '/article_list';
-  }
 
   render() {
-    const {classes, ca_data, categoryTreeIsFetching, callbackMessage} = this.props;
-    const {ca_select_open, category_title, skin_id, article, isValidOnSubmit} = this.state;
+    console.log('render');
 
-    if (categoryTreeIsFetching) {
+    const {classes, ca_data, isFetching, callbackMessage} = this.props;
+    const {ca_select_open, skin_id, article, category_title, isValidOnSubmit} = this.state;
+    console.log(`isFetching: ${isFetching}`);
+    console.log(`categoryIsFetching ${callbackMessage}`);
+    if (isFetching) {
       return <LinearProgress color="secondary"/>;
     }
     return (
       <Paper className={classes.root}>
+
         <div>
           <Typography variant='title'>
-            撰写文章:
+            更新文章:
           </Typography>
           <TextField
+            id="title"
             className={classes.text_field}
             autoFocus={true}
             label='文章标题'
@@ -222,9 +199,9 @@ class ArticleAdd extends React.Component {
             placeholder='请输入标题'
             required={true}
             error={isValidOnSubmit && !article.articleTitle}
+            value={article.articleTitle}
             onChange={this.handleChange('articleTitle')}
           />
-
 
           <TextField
             className={classes.text_field}
@@ -232,15 +209,16 @@ class ArticleAdd extends React.Component {
             margin='normal'
             placeholder='请输入数字'
             type='number'
+            value={article.articleOrder}
             onChange={this.handleChange('articleOrder')}
           />
 
           <SingleSelect
             item={'articleType'}
-            // initValue=''
             suggestions={article_type_data}
+            initValue={article.articleType}
             placeholder='请输入文章类型'
-            operation={ADD_OPERATION}
+            operation={UPDATE_OPERATION}
             onSelectValue={this.handleSelectValue.bind(this)}
           />
 
@@ -249,6 +227,7 @@ class ArticleAdd extends React.Component {
             label='选择皮肤'
             margin='normal'
             placeholder='请输入皮肤名字'
+            value={article.articleSkin}
             onChange={this.handleChange('articleSkin')}
           />
 
@@ -257,13 +236,16 @@ class ArticleAdd extends React.Component {
             label='文章来源'
             margin='normal'
             placeholder='请输入文章来源'
+            value={article.articleAuthor}
             required={true}
-            onChange={this.handleChange('articleAuthor')}
             error={isValidOnSubmit && !article.articleAuthor}
+            onChange={this.handleChange('articleAuthor')}
           />
 
         </div>
+
         <div>
+
           <TextField
             className={classes.text_field}
             label='栏目选择'
@@ -276,6 +258,7 @@ class ArticleAdd extends React.Component {
             onClick={() => this.setState({ca_select_open: true})}
           >
           </TextField>
+
           <Dialog
             classes={
               {
@@ -311,18 +294,16 @@ class ArticleAdd extends React.Component {
           </TextField>
 
 
-          {/*标签待添加*/}
-
           <TextField
             className={classes.text_field}
             label='文章描述'
             margin='normal'
             placeholder='请输入文章描述'
             required={true}
+            value={article.articleDesc}
             onChange={this.handleChange('articleDesc')}
           />
         </div>
-
 
         <div style={{margin: '20px 0 20px 0'}}>
           <CommonUpload
@@ -341,33 +322,35 @@ class ArticleAdd extends React.Component {
             icon={<CloudUploadIcon/>}
           />
         </div>
+
         <Editor
           handleEditorContent={this.handleEditorContent.bind(this)}
-          initialContent=''/>
+          initialContent={article.articleContent}/>
+
+
         <Button
           style={{margin: '10px'}}
           color='primary'
           variant="contained"
-          onClick={this.handleConfirmFrameOpen}
           // onClick={this.handleSubmit.bind(this)}
+          onClick={this.handleConfirmFrameOpen}
         >
           <Typography color="inherit" style={{paddingRight: '10px'}}>
             立即提交
           </Typography>
           <Done/>
         </Button>
-
-
+        {/*确认更新的弹出框*/}
         <Dialog
           open={this.state.alertOpen}
-          onClose={this.handleClose}
+          onClose={this.handleConfirmFrameClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">{'From Gangster CMS Reminder'}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              确定添加文章：{this.state.article.articleTitle}
+              确定更新文章：{article.articleTitle}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -379,6 +362,9 @@ class ArticleAdd extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
+        {/*更新成功后弹出的信息*/}
+
+
         {
           callbackMessage !== undefined ?
             <Snackbar
@@ -407,15 +393,16 @@ class ArticleAdd extends React.Component {
             </Snackbar>
             : null
         }
+
         <Button
           style={{margin: '10px'}}
           color='primary'
-          variant='contained'
+          variant="contained"
         >
-          <Typography color='inherit' style={{paddingRight: '10px'}}>
+          <Typography color="inherit" style={{paddingRight: '10px'}}>
             重置
           </Typography>
-
+          <Cancel/>
         </Button>
       </Paper>
     );
@@ -423,12 +410,12 @@ class ArticleAdd extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    ca_data: state.categoryTreeList.data.tree,
-    isAdding: state.articleAdd.isAdding,
-    categoryIsFetching: state.categoryGet.categoryIsFetching,
-    categoryTreeIsFetching: state.categoryTreeList.categoryTreeIsFetching,
-    callbackMessage: state.articleAdd.data.msg
-  })
-;
+  isFetching: state.articleEdit.isFetching,
+  ca_data: state.articleEdit.data.categoryTree,
+  article: state.articleEdit.data.article,
+  category: state.categoryGet.data.category,
+  isUpdate: state.articleEdit.isUpdate,
+  callbackMessage: state.articleEdit.callbackData.msg
+});
 
-export default withStyles(styles)(connect(mapStateToProps)(ArticleAdd));
+export default withStyles(styles)(connect(mapStateToProps)(ArticleEdit));

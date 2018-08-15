@@ -1,5 +1,5 @@
 import {createAction} from 'redux-actions';
-import {ACCESS_TOKEN, URL_ARTICLE_PRE} from '../util/data';
+import {ACCESS_TOKEN, ARTICLE_URL} from '../util/data';
 import {fileUpload} from './fileUploadAction';
 
 const requestCreateArticle = createAction('REQUEST_CREATE_ARTICLE');
@@ -7,7 +7,9 @@ const receiveCreateArticle = createAction('RECEIVE_CREATE_ARTICLE');
 
 export async function uploadArticleData(data) {
   const {article, all_files} = data;
+  console.group('addArticle Info');
   console.log(article, all_files);
+  console.groupEnd();
   //  首先上传文件
   const {articleThumb, fileNameArray} = await fileUpload(all_files);
 
@@ -17,7 +19,7 @@ export async function uploadArticleData(data) {
   article.articleInHomepage = true;
 
   // 上传文章
-  return fetch(`${URL_ARTICLE_PRE}`, {
+  return fetch(`${ARTICLE_URL}`, {
     headers: new Headers({
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)
@@ -35,7 +37,7 @@ export async function uploadArticleData(data) {
         throw new Error('请求错误:' + response.status);
       }
     )
-    .then(data => ({data: data}));
+    .then(data => ({msg: data}));
 }
 
 export function addArticle(data) {

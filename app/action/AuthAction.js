@@ -1,4 +1,4 @@
-import {ACCESS_TOKEN, IS_LOGINED, URL_FETCH_LOGIN_TOKEN, USER_INFO} from '../util/data';
+import {ACCESS_TOKEN, IS_LOGINED, FETCH_LOGIN_TOKEN_URL, USER_INFO} from '../util/data';
 
 
 export const getToken = (userInfo) => {
@@ -7,7 +7,7 @@ export const getToken = (userInfo) => {
   const headers = new Headers({
     'Content-Type': 'application/json',
   });
-  return fetch(URL_FETCH_LOGIN_TOKEN, {
+  return fetch(FETCH_LOGIN_TOKEN_URL, {
     method: 'POST',
     body: JSON.stringify(userInfo),
     headers: headers

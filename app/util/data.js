@@ -25,21 +25,24 @@ export const skin_data = [
   }
 ];
 
-const URL_PRE = 'http://smy.xkenmon.cn:9080';
+const URL_PRE = 'http://smy.xkenmon.cn:8080';
 
-export const URL_ARTICLE_PRE = `${URL_PRE}/article`;
+export const ARTICLE_URL = `${URL_PRE}/article`;
 
-export const URL_CATEGORY_TREE = `${URL_PRE}/category/tree`;
+export const CATEGORY_TREE_URL = `${URL_PRE}/category/tree`;
 
-export const URL_HTTP_ADDR = `${URL_PRE}/qiniu/upHttpAddr`;
+export const HTTP_ADDR_URL = `${URL_PRE}/qiniu/upHttpAddr`;
 
-export const URL_HTTP_TOKEN = `${URL_PRE}/qiniu/upToken`;
+export const HTTP_TOKEN_URL = `${URL_PRE}/qiniu/upToken`;
 
-export const URL_HTTP_DOMAIN = `${URL_PRE}/qiniu/cdnDomain`;
+export const HTTP_DOMAIN_URL = `${URL_PRE}/qiniu/cdnDomain`;
 
-export const URL_FETCH_LOGIN_TOKEN = `${URL_PRE}/auth`;
+export const FETCH_LOGIN_TOKEN_URL = `${URL_PRE}/auth`;
+
+export const CATEGORY_URL = `${URL_PRE}/category`;
 
 export const LOGIN_URL = `${URL_PRE}/login`;
+
 
 export const ACCESS_TOKEN = 'accessToken';
 

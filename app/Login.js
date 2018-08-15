@@ -88,11 +88,9 @@ class Login extends Component {
 
   async handleSubmit(event) {
     event.preventDefault();
-    let {code, data} = await getToken(this.state);
-    alert(data);
+    let {code} = await getToken(this.state);
     if (code === 200) {
       window.location.href = '/';
-      // this.props.history.push('/');
     }
   }
 

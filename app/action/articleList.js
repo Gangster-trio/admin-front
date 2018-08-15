@@ -1,13 +1,13 @@
 import {createAction} from 'redux-actions';
 import {ARTICLE_LIST_HEADER} from '../mock/article/article_list';
 import {convertDate, convertStatus} from '../util/dataConversioin';
-import {ACCESS_TOKEN, URL_ARTICLE_PRE} from '../util/data';
+import {ACCESS_TOKEN, ARTICLE_URL} from '../util/data';
 
 const requestArticleList = createAction('REQUEST_ARTICLE_LIST');
 const receiveArticleList = createAction('RECEIVE_ARTICLE_LIST');
 
 export const fetchArticlesData = (page, limit, order, orderBy) => {
-  return fetch(`${URL_ARTICLE_PRE}?order=${order}&orderBy=${orderBy}&pageNumber=${page}&rowPerPage=${limit}`, {
+  return fetch(`${ARTICLE_URL}?order=${order}&orderBy=${orderBy}&pageNumber=${page}&rowPerPage=${limit}&siteId=1`, {
       headers: new Headers({
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)

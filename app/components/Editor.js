@@ -10,13 +10,14 @@ class Editor extends React.Component {
 
   static propTypes = {
     handleEditorContent: PropTypes.func.isRequired,
+    initialContent: PropTypes.string.isRequired
   };
 
 
   constructor(props) {
     super(props);
     this.state = {
-      content: ''
+      content: props.initialContent
     };
   }
 
@@ -63,10 +64,11 @@ class Editor extends React.Component {
   }
 
   render() {
+    let content = this.state.content;
     const editorProps = {
       height: 500,
       contentFormat: 'html',
-      initialContent: '',
+      initialContent: content,
       onChange: this.handleChange,
       media: {
         allowPasteImage: true, // 剪切图
@@ -76,7 +78,7 @@ class Editor extends React.Component {
     };
 
     return (
-      <div style={{marginRight: '100px', border: '1px solid rgba(0, 0, 0, 0.25)'}}>
+      <div style={{border: '1px solid rgba(0, 0, 0, 0.25)'}}>
         <BraftEditor {...editorProps}/>
       </div>
     );

@@ -1,12 +1,12 @@
 import {createAction} from 'redux-actions';
-import {ACCESS_TOKEN, URL_HTTP_DOMAIN, URL_HTTP_TOKEN} from '../util/data';
+import {ACCESS_TOKEN, HTTP_DOMAIN_URL, HTTP_TOKEN_URL} from '../util/data';
 import * as qiniu from 'qiniu-js';
 
 
 const requestFileUpload = createAction('REQUEST_FILE_UPLOAD');
 const responseFileUpload = createAction('RESPONSE_FILE_UPLOAD');
 export const fetchUploadCdnDomain = () => {
-  return fetch(URL_HTTP_DOMAIN, {
+  return fetch(HTTP_DOMAIN_URL, {
     headers: new Headers({
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)
@@ -24,7 +24,7 @@ export const fetchUploadCdnDomain = () => {
 
 
 export const fetchUploadToken = () => {
-  return fetch(URL_HTTP_TOKEN, {
+  return fetch(HTTP_TOKEN_URL, {
     headers: new Headers({
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)

@@ -55,12 +55,6 @@ class TreeNodeInner extends React.Component {
     hidden: true,
   };
 
-  /**
-   * {
-   *   title:'***',
-   *   child: [{}],
-   * }
-   */
   render () {
     const {data, classes, onSelect,title} = this.props;
     const {hidden} = this.state;

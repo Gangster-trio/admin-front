@@ -293,6 +293,7 @@ class PersistentDrawer extends React.Component {
                   aria-owns={anchorEl ? 'simple-menu' : null}
                   aria-haspopup="true"
                   onClick={this.handleClick}
+
                 >
                   <AccountCircleIcon/>
                 </IconButton>
@@ -300,10 +301,10 @@ class PersistentDrawer extends React.Component {
                   id="simple-menu"
                   anchorEl={anchorEl}
                   open={Boolean(anchorEl)}
-                  onClose={this.handleClose}
+                  onClose={this.handleClose()}
                 >
-                  <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                  <MenuItem onClick={this.handleClose('profile')}>Profile</MenuItem>
+                  <MenuItem onClick={this.handleClose('account')}>My account</MenuItem>
                   <MenuItem onClick={this.handleClose('logout')}>Logout</MenuItem>
                 </Menu>
               </div>
