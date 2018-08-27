@@ -8,15 +8,14 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
 
 class AlertDialog extends React.Component {
-
   static propTypes = {
     title: PropTypes.string.isRequired,
     contentText: PropTypes.string.isRequired,
-    onEventSubmit: PropTypes.func.isRequired
+    onEventSubmit: PropTypes.func.isRequired,
   };
 
   state = {
-    open: false
+    open: false,
   };
 
   handleClickOpen = () => {
@@ -42,13 +41,11 @@ class AlertDialog extends React.Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{'Use Google\'s location service?'}
-            ${title}
+          <DialogTitle id="alert-dialog-title">
+            {"Use Google's location service?"}${title}
           </DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              {contentText}
-            </DialogContentText>
+            <DialogContentText id="alert-dialog-description">{contentText}</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">

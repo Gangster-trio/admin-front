@@ -1,19 +1,19 @@
-import {handleActions} from 'redux-actions';
+import { handleActions } from 'redux-actions';
 
 export const fileUplaodReducer = handleActions(
   {
     REQUEST_FILE_UPLOAD: state => ({
       ...state,
-      isUpload: true
+      isUpload: true,
     }),
     RESPONSE_FILE_UPLOAD: (state, action) => ({
       ...state,
       isUpload: false,
-      data: action.payload
-    })
+      data: action.payload,
+    }),
   },
   {
     isUpload: false,
-    data: {}
-  }
+    data: {},
+  },
 );

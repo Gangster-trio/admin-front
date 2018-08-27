@@ -1,19 +1,19 @@
-import {handleActions} from 'redux-actions';
+import { handleActions } from 'redux-actions';
 
 export const categoryGetReducer = handleActions(
   {
     REQUEST_FETCH_CATEGORY: state => ({
       ...state,
-      categoryIsFetching: true
+      categoryIsFetching: true,
     }),
-    RECEIVE_SINGLE_CATEGORY: (state, action) => ({
+    RECEIVE_FETCH_CATEGORY: (state, action) => ({
       ...state,
       categoryIsFetching: false,
-      data: action.payload
-    })
+      data: action.payload,
+    }),
   },
   {
     categoryIsFetching: true,
-    data: {}
-  }
+    data: {},
+  },
 );

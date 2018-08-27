@@ -6,18 +6,17 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle/DialogTitle';
+import { fetchUpdateCategoryInfo, updateCategory } from '../action/categoryEditAction';
 import { Tree } from '../components/Tree';
 import CommonUpload from '../components/CommonUpload';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import Editor from '../components/Editor';
 import Button from '@material-ui/core/Button/Button';
 import Done from '@material-ui/icons/Done';
 import Cancel from '@material-ui/icons/Cancel';
 import connect from 'react-redux/es/connect/connect';
-import { ARTICLE_INDEX, article_type_data } from '../util/data';
+import { CATEGORY_INDEX, category_type_data } from '../util/data';
 import SingleSelect, { UPDATE_OPERATION } from '../components/SingleSelect';
 import LinearProgress from '@material-ui/core/LinearProgress/LinearProgress';
-import { fetchUpdateArticleInfo, updateArticle } from '../action/articleEditAction';
 import Dialogs from '../components/Dialogs';
 import CustomizedSnackbars from '../components/Snackbars';
 
@@ -38,12 +37,12 @@ const styles = theme => ({
 
 const initState = {
   ca_select_open: false,
-  category_id: null,
+  parent_category_id: null,
   old_category: null,
-  category_title: '',
+  parent_category_title: '',
   skin_id: -1,
   type_id: -1,
-  article: null,
+  parentCategory: null,
   category: null,
   all_files: {
     img: null,
@@ -54,16 +53,16 @@ const initState = {
   updateSuccess: undefined, // 设置文章是否上传成功,没有上传，就为undefined
 };
 
-class ArticleEdit extends React.Component {
+class CategoryEdit extends React.Component {
   static propTypes = {
-    articleId: PropTypes.string,
+    categoryId: PropTypes.string,
     classes: PropTypes.object.isRequired,
     isFetching: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     isUpdating: PropTypes.bool.isRequired,
-    article: PropTypes.object,
-    ca_data: PropTypes.array,
     category: PropTypes.object,
+    ca_data: PropTypes.array,
+    parentCategory: PropTypes.object,
     callbackMessage: PropTypes.object,
     match: PropTypes.any,
   };
@@ -74,15 +73,15 @@ class ArticleEdit extends React.Component {
   }
 
   componentDidMount() {
-    const articleId = this.props.match.params.id;
-    this.props.dispatch(fetchUpdateArticleInfo(articleId));
+    const categoryId = this.props.match.params.id;
+    this.props.dispatch(fetchUpdateCategoryInfo(categoryId));
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
-      article: nextProps.article,
+      category: nextProps.category,
       isFetching: nextProps.isFetching,
-      category_title: nextProps.category.categoryTitle,
+      parent_category_title: nextProps.parentCategory.categoryTitle,
     });
   }
 
@@ -92,12 +91,12 @@ class ArticleEdit extends React.Component {
 
   onSelectCa = data => {
     this.setState(prevState => ({
-      category_id: data.categoryId,
-      category_title: data.categoryTitle,
+      parent_category_id: data.categoryId,
+      parent_category_title: data.categoryTitle,
       ca_select_open: false,
-      article: {
-        ...prevState.article,
-        articleCategoryId: data.categoryId,
+      parentCategory: {
+        ...prevState.parentCategory,
+        parentCategoryId: data.categoryId,
       },
     }));
   };
@@ -105,8 +104,8 @@ class ArticleEdit extends React.Component {
   handleChange = name => event => {
     const value = event.target.value;
     this.setState(prevState => ({
-      article: {
-        ...prevState.article,
+      category: {
+        ...prevState.category,
         [name]: value,
       },
     }));
@@ -114,18 +113,9 @@ class ArticleEdit extends React.Component {
 
   handleSelectValue = (item, value) => {
     this.setState(prevState => ({
-      article: {
-        ...prevState.article,
+      category: {
+        ...prevState.category,
         [item]: value,
-      },
-    }));
-  };
-
-  handleEditorContent = content => {
-    this.setState(prevState => ({
-      article: {
-        ...prevState.article,
-        articleContent: content,
       },
     }));
   };
@@ -145,30 +135,24 @@ class ArticleEdit extends React.Component {
   };
 
   handleValid = () => {
-    const { article } = this.state;
+    const { category } = this.state;
     this.setState({
       isSubmitting: true, // 将当前状态修改为正在提交状态，用来验证输入的有效性
     });
-    return !!(
-      article.articleTitle &&
-      article.articleAuthor &&
-      article.articleCategoryId &&
-      article.articleType
-    );
+    return !!(category.categoryTitle && category.categoryParentId && category.categoryType);
   };
 
-  async handleArticleSubmit() {
-    const { article, all_files } = this.state;
+  async handleCategorySubmit() {
+    const { category, all_files } = this.state;
     const { dispatch } = this.props;
     if (this.handleValid()) {
-      await dispatch(updateArticle({ article, all_files }));
+      await dispatch(updateCategory({ category, all_files }));
       const { callbackMessage } = this.props;
       let status;
       callbackMessage.code === 200 ? (status = 'success') : (status = 'failed');
       this.setState({
         updateSuccess: status,
       });
-      this.child.handleClick();
     } else {
       alert('请填写必要的字段信息');
     }
@@ -178,8 +162,8 @@ class ArticleEdit extends React.Component {
     const { classes, ca_data } = this.props;
     const {
       ca_select_open,
-      category_title,
-      article,
+      parent_category_title,
+      category,
       isSubmitting,
       isFetching,
       updateSuccess,
@@ -190,18 +174,18 @@ class ArticleEdit extends React.Component {
     return (
       <Paper className={classes.root}>
         <div>
-          <Typography variant="title">更新文章:</Typography>
+          <Typography variant="title">更新栏目:</Typography>
           <TextField
             id="title"
             className={classes.text_field}
             autoFocus={true}
-            label="文章标题"
-            error={isSubmitting && !article.articleTitle}
+            label="栏目标题"
+            error={isSubmitting && !category.categoryTitle}
             margin="normal"
             placeholder="请输入标题"
             required={true}
-            value={article.articleTitle}
-            onChange={this.handleChange('articleTitle')}
+            value={category.categoryTitle}
+            onChange={this.handleChange('categoryTitle')}
           />
 
           <TextField
@@ -210,15 +194,15 @@ class ArticleEdit extends React.Component {
             margin="normal"
             placeholder="请输入数字"
             type="number"
-            value={article.articleOrder}
-            onChange={this.handleChange('articleOrder')}
+            value={category.categoryOrder}
+            onChange={this.handleChange('categoryOrder')}
           />
 
           <SingleSelect
-            item={'articleType'}
-            suggestions={article_type_data}
-            initValue={article.articleType}
-            placeholder="请输入文章类型"
+            item={'categoryType'}
+            suggestions={category_type_data}
+            initValue={category.categoryType}
+            placeholder="请输入栏目类型"
             operation={UPDATE_OPERATION}
             onSelectValue={this.handleSelectValue.bind(this)}
           />
@@ -228,19 +212,8 @@ class ArticleEdit extends React.Component {
             label="选择皮肤"
             margin="normal"
             placeholder="请输入皮肤名字"
-            value={article.articleSkin}
-            onChange={this.handleChange('articleSkin')}
-          />
-
-          <TextField
-            className={classes.text_field}
-            label="文章来源"
-            margin="normal"
-            placeholder="请输入文章来源"
-            value={article.articleAuthor}
-            required={true}
-            error={isSubmitting && !article.articleAuthor}
-            onChange={this.handleChange('articleAuthor')}
+            value={category.categorySkin}
+            onChange={this.handleChange('categorySkin')}
           />
         </div>
 
@@ -252,8 +225,8 @@ class ArticleEdit extends React.Component {
             placeholder="点击选择栏目"
             required={true}
             helperText="Click to select category"
-            value={category_title}
-            error={isSubmitting && !article.articleCategoryId}
+            value={parent_category_title}
+            // error={isSubmitting && !category.parentCategoryId}
             onClick={() => this.setState({ ca_select_open: true })}
           />
 
@@ -270,12 +243,12 @@ class ArticleEdit extends React.Component {
 
           <TextField
             className={classes.text_field}
-            label="文章描述"
+            label="栏目描述"
             margin="normal"
-            placeholder="请输入文章描述"
+            placeholder="请输入栏目描述"
             required={true}
-            value={article.articleDesc}
-            onChange={this.handleChange('articleDesc')}
+            value={category.categoryDesc}
+            onChange={this.handleChange('categoryDesc')}
           />
         </div>
 
@@ -287,28 +260,15 @@ class ArticleEdit extends React.Component {
             callback={this.handleAllFileUpload.bind(this)}
             icon={<CloudUploadIcon />}
           />
-          <CommonUpload
-            buttonName={'附件上传'}
-            color={'primary'}
-            multiple={true}
-            file_type="files"
-            callback={this.handleAllFileUpload.bind(this)}
-            icon={<CloudUploadIcon />}
-          />
         </div>
-
-        <Editor
-          handleEditorContent={this.handleEditorContent}
-          initialContent={article.articleContent}
-        />
 
         <Dialogs
           ref={instance => {
             this.child = instance;
           }}
           title={'From Gangster Cms Message'}
-          contentText={`确定修改文章标题为: ${article.articleTitle}的文章?`}
-          onEventSubmit={this.handleArticleSubmit.bind(this)}
+          contentText={`确定修改标题为: ${category.categoryTitle}的栏目?`}
+          onEventSubmit={this.handleCategorySubmit.bind(this)}
         />
 
         {updateSuccess !== undefined ? (
@@ -318,7 +278,7 @@ class ArticleEdit extends React.Component {
             }}
             variant={updateSuccess}
             message={updateSuccess ? '更新成功' : '更新失败'}
-            redirect={ARTICLE_INDEX}
+            redirect={CATEGORY_INDEX}
           />
         ) : null}
 
@@ -348,12 +308,12 @@ class ArticleEdit extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  isFetching: state.articleEdit.isFetching,
-  isUpdating: state.articleEdit.isUpdating,
-  ca_data: state.articleEdit.data.categoryTree,
-  article: state.articleEdit.data.article,
-  category: state.articleEdit.data.category,
-  callbackMessage: state.articleEdit.callbackMessage,
+  isFetching: state.categoryEdit.isFetching,
+  isUpdating: state.categoryEdit.isUpdating,
+  ca_data: state.categoryEdit.data.categoryTree,
+  category: state.categoryEdit.data.category,
+  parentCategory: state.categoryEdit.data.parentCategory,
+  callbackMessage: state.categoryEdit.callbackMessage,
 });
 
-export default withStyles(styles)(connect(mapStateToProps)(ArticleEdit));
+export default withStyles(styles)(connect(mapStateToProps)(CategoryEdit));

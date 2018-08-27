@@ -11,7 +11,6 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 
 export class Tree extends React.Component {
-
   static propTypes = {
     /**
      * title: 必选,
@@ -20,15 +19,15 @@ export class Tree extends React.Component {
     data: PropTypes.array.isRequired,
     classes: PropTypes.object,
     onSelect: PropTypes.func,
-    title:PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
   };
 
-  render () {
-    const {data, onSelect,title} = this.props;
+  render() {
+    const { data, onSelect, title } = this.props;
     return (
-      <List style={{marginRight: '20px'}}>
+      <List style={{ marginRight: '20px' }}>
         {data.map((v, i) => (
-          <TreeNode onSelect={onSelect} key={`${v[title]}_${i}`} title={title} data={v}/>
+          <TreeNode onSelect={onSelect} key={`${v[title]}_${i}`} title={title} data={v} />
         ))}
       </List>
     );
@@ -41,10 +40,10 @@ class TreeNodeInner extends React.Component {
     classes: PropTypes.object,
     onSelect: PropTypes.func,
     hidden: PropTypes.bool,
-    title: PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
   };
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       hidden: props.hidden,
@@ -55,9 +54,9 @@ class TreeNodeInner extends React.Component {
     hidden: true,
   };
 
-  render () {
-    const {data, classes, onSelect,title} = this.props;
-    const {hidden} = this.state;
+  render() {
+    const { data, classes, onSelect, title } = this.props;
+    const { hidden } = this.state;
 
     return (
       <div className={classes.node}>
@@ -65,60 +64,61 @@ class TreeNodeInner extends React.Component {
           onClick={() => {
             onSelect(data.data);
           }}
-          button={onSelect !== undefined} dense={true}>
+          button={onSelect !== undefined}
+          dense={true}
+        >
           <div
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
-              this.setState({hidden: !hidden});
+              this.setState({ hidden: !hidden });
             }}
           >
             {data.child &&
-            (hidden ?
+              (hidden ? (
                 <ListItemIcon>
-                  <KeyboardArrowDown/>
+                  <KeyboardArrowDown />
                 </ListItemIcon>
-                :
+              ) : (
                 <ListItemIcon>
-                  <KeyboardArrowRight/>
+                  <KeyboardArrowRight />
                 </ListItemIcon>
-            )
-            }
+              ))}
           </div>
-          {!data.child&& (
+          {!data.child && (
             <ListItemIcon>
-              <FolderIcon/>
-            </ListItemIcon>)
-          }
-          <ListItemText className={classes.list_item_text}
-                        primary={data.data[title]}
-          />
+              <FolderIcon />
+            </ListItemIcon>
+          )}
+          <ListItemText className={classes.list_item_text} primary={data.data[title]} />
         </ListItem>
-        {data.child &&
-        <Collapse in={hidden}>
-          <List>
-            {data.child !== undefined && (
-              data.child.map((v,i) => (
-                  <TreeNode onSelect={onSelect} hidden={true} key={`${v[title]}_${i}`} title={title} data={v}/>
-                )
-              )
-            )}
-          </List>
-        </Collapse>
-        }
+        {data.child && (
+          <Collapse in={hidden}>
+            <List>
+              {data.child !== undefined &&
+                data.child.map((v, i) => (
+                  <TreeNode
+                    onSelect={onSelect}
+                    hidden={true}
+                    key={`${v[title]}_${i}`}
+                    title={title}
+                    data={v}
+                  />
+                ))}
+            </List>
+          </Collapse>
+        )}
       </div>
     );
   }
 }
 
 const nodeStyles = () => ({
-      node: {
-        paddingLeft: '20px',
-      },
-      list_item_text: {
-        padding: '0px',
-      },
-    }
-  )
-;
+  node: {
+    paddingLeft: '20px',
+  },
+  list_item_text: {
+    padding: '0px',
+  },
+});
 
 export const TreeNode = withStyles(nodeStyles)(TreeNodeInner);

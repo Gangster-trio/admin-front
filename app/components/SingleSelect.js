@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import NoSsr from '@material-ui/core/NoSsr';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
-import {emphasize} from '@material-ui/core/styles/colorManipulator';
+import { emphasize } from '@material-ui/core/styles/colorManipulator';
 import CreatableSelect from 'react-select/lib/Creatable';
 
 const styles = theme => ({
@@ -49,8 +49,8 @@ const styles = theme => ({
     height: 48,
     // margin: 10,
     margin: theme.spacing.unit * 2,
-    display: 'inline-block'
-  }
+    display: 'inline-block',
+  },
 });
 
 /**
@@ -58,18 +58,16 @@ const styles = theme => ({
  */
 function NoOptionsMessage(props) {
   // return null;
-  return <Typography
-    color="textSecondary"
-    className={props.selectProps.classes.noOptionsMessage}
-  >
-    {props.children}
-  </Typography>;
+  return (
+    <Typography color="textSecondary" className={props.selectProps.classes.noOptionsMessage}>
+      {props.children}
+    </Typography>
+  );
 }
 
-function inputComponent({inputRef, ...props}) {
+function inputComponent({ inputRef, ...props }) {
   return <div ref={inputRef} {...props} />;
 }
-
 
 function Control(props) {
   return (
@@ -140,38 +138,32 @@ const components = {
 export const ADD_OPERATION = 'ADD';
 export const UPDATE_OPERATION = 'UPDATE';
 
-
 //  添加操作时，需要添加
 
 class SingleSelect extends React.Component {
-
   static propTypes = {
-    suggestions: PropTypes.array.isRequired,          // 侯选项
-    item: PropTypes.string.isRequired,                // 填写字段的名字
-    placeholder: PropTypes.string.isRequired,          // 在placeholder处写的内容
-    onSelectValue: PropTypes.func.isRequired,          // 调用者处理的函数
-    operation: PropTypes.string.isRequired,            // 添加或者更新操作名称，参考ADD_OPERATION,UPDATE_OPERATION
-    initValue: PropTypes.string,                       // 更新操作时需要添加，默认的初始值
+    suggestions: PropTypes.array.isRequired, // 侯选项
+    item: PropTypes.string.isRequired, // 填写字段的名字
+    placeholder: PropTypes.string.isRequired, // 在placeholder处写的内容
+    onSelectValue: PropTypes.func.isRequired, // 调用者处理的函数
+    operation: PropTypes.string.isRequired, // 添加或者更新操作名称，参考ADD_OPERATION,UPDATE_OPERATION
+    initValue: PropTypes.string, // 更新操作时需要添加，默认的初始值
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      single: {value: props.initValue, label: props.initValue}
+      single: { value: props.initValue, label: props.initValue },
     };
   }
 
-  handleAddChange = (newValue, actionMeta) => {
-    const {item} = this.props;
-    console.group('add article type');
-    console.log(newValue);
-    console.log(`action: ${actionMeta.action}`);
-    console.groupEnd();
+  handleAddChange = newValue => {
+    const { item } = this.props;
     this.props.onSelectValue(item, newValue.value);
   };
 
   handleUpdateChange = name => data => {
-    const {item} = this.props;
+    const { item } = this.props;
     this.setState({
       [name]: data,
     });
@@ -179,39 +171,35 @@ class SingleSelect extends React.Component {
   };
 
   render() {
-    const {classes, placeholder, suggestions, operation} = this.props;
+    const { classes, placeholder, suggestions, operation } = this.props;
     return (
-      <div
-        className={classes.select}>
+      <div className={classes.select}>
         <NoSsr>
-          {
-            operation === ADD_OPERATION ?
-              <CreatableSelect
-                color={'primary'}
-                classes={classes}
-                options={suggestions}
-                components={components}
-                onChange={this.handleAddChange}
-                placeholder={placeholder}
-              />
-              :
-              <CreatableSelect
-                color={'primary'}
-                classes={classes}
-                options={suggestions}
-                value={this.state.single}
-                components={components}
-                onChange={this.handleUpdateChange('single')}
-                placeholder={placeholder}
-              />
-          }
-
+          {operation === ADD_OPERATION ? (
+            <CreatableSelect
+              color={'primary'}
+              classes={classes}
+              options={suggestions}
+              components={components}
+              onChange={this.handleAddChange}
+              placeholder={placeholder}
+            />
+          ) : (
+            <CreatableSelect
+              color={'primary'}
+              classes={classes}
+              options={suggestions}
+              value={this.state.single}
+              components={components}
+              onChange={this.handleUpdateChange('single')}
+              placeholder={placeholder}
+            />
+          )}
         </NoSsr>
       </div>
     );
   }
 }
-
 
 SingleSelect.propTypes = {
   classes: PropTypes.object.isRequired,

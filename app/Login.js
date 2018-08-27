@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField/TextField';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -8,8 +8,7 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import LockIcon from '@material-ui/icons/Lock';
 
-import {Notification, translate, userLogin} from 'react-admin';
-import {getToken} from './action/AuthAction';
+import { getToken } from './action/AuthAction';
 
 const styles = theme => ({
   main: {
@@ -55,54 +54,50 @@ const styles = theme => ({
     width: 300,
   },
 });
-const renderInput = ({
-                       meta: {touched, error} = {},
-                       input: {...inputProps},
-                       ...props
-                     }) => (
-  <TextField
-    error={!!(touched && error)}
-    helperText={touched && error}
-    {...inputProps}
-    {...props}
-    fullWidth
-  />
-);
+
+// const renderInput = ({ meta: { touched, error } = {}, input: { ...inputProps }, ...props }) => (
+//   <TextField
+//     error={!!(touched && error)}
+//     helperText={touched && error}
+//     {...inputProps}
+//     {...props}
+//     fullWidth
+//   />
+// );
 
 class Login extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
     };
   }
 
-  handleChange = name => (event) => {
+  handleChange = name => event => {
     const value = event.target.value;
     this.setState({
-      [name]: value
+      [name]: value,
     });
   };
 
   async handleSubmit(event) {
     event.preventDefault();
-    let {code} = await getToken(this.state);
+    let { code } = await getToken(this.state);
     if (code === 200) {
       window.location.href = '/';
     }
   }
 
   render() {
-    const {classes} = this.props;
-    const {username, password} = this.state;
+    const { classes } = this.props;
+    const { username, password } = this.state;
     return (
       <div className={classes.main}>
         <Card className={classes.card}>
           <div className={classes.avatar}>
             <Avatar className={classes.icon}>
-              <LockIcon/>
+              <LockIcon />
             </Avatar>
           </div>
 
@@ -137,12 +132,13 @@ class Login extends Component {
 
             <CardActions className={classes.actions}>
               <Button
-                type='submit'
+                type="submit"
                 variant="raised"
                 color="primary"
                 className={classes.button}
                 fullWidth
-              >登陆
+              >
+                登陆
               </Button>
             </CardActions>
           </form>

@@ -4,16 +4,16 @@ export const categoryTreeReducer = handleActions(
   {
     REQUEST_CATEGORY_TREE: state => ({
       ...state,
-      categoryTreeIsFetching: true
+      categoryTreeIsFetching: true,
     }),
     RECEIVE_CATEGORY_TREE: (state, action) => ({
       ...state,
       categoryTreeIsFetching: false,
-      data: action.payload
-    })
+      data: action.payload,
+    }),
   },
   {
     categoryTreeIsFetching: true,
-    data: []
-  }
+    data: [],
+  },
 );

@@ -1,7 +1,6 @@
-import {createAction} from 'redux-actions';
-import {ACCESS_TOKEN, HTTP_DOMAIN_URL, HTTP_TOKEN_URL} from '../util/data';
+import { createAction } from 'redux-actions';
+import { ACCESS_TOKEN, HTTP_DOMAIN_URL, HTTP_TOKEN_URL } from '../util/data';
 import * as qiniu from 'qiniu-js';
-
 
 const requestFileUpload = createAction('REQUEST_FILE_UPLOAD');
 const responseFileUpload = createAction('RESPONSE_FILE_UPLOAD');
@@ -9,52 +8,47 @@ export const fetchUploadCdnDomain = () => {
   return fetch(HTTP_DOMAIN_URL, {
     headers: new Headers({
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)
-    })
+      Authorization: 'Bearer ' + localStorage.getItem(ACCESS_TOKEN),
+    }),
   })
     .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('请求错误:' + response.status);
+      if (response.ok) {
+        return response.json();
       }
-    )
-    .then(msg => (msg.data));
+      throw new Error('请求错误:' + response.status);
+    })
+    .then(msg => msg.data);
 };
-
 
 export const fetchUploadToken = () => {
   return fetch(HTTP_TOKEN_URL, {
     headers: new Headers({
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)
-    })
+      Authorization: 'Bearer ' + localStorage.getItem(ACCESS_TOKEN),
+    }),
   })
     .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('请求错误:' + response.status);
+      if (response.ok) {
+        return response.json();
       }
-    )
-    .then(msg => (msg.data));
+      throw new Error('请求错误:' + response.status);
+    })
+    .then(msg => msg.data);
 };
-
 
 export async function fileUpload(all_files) {
   let fileNameArray = [];
-  let articleThumb = '';
+  let thumb = '';
   if (all_files) {
     try {
       if (all_files.img) {
         let imgFile = all_files.img;
         let cloudFileName = `pic/siteId/${new Date().getTime()}-${imgFile.name}`;
-        articleThumb = cloudFileName;
+        thumb = cloudFileName;
         await commonUploadFile(imgFile, cloudFileName);
       }
       if (all_files.files) {
         let files = all_files.files;
-        console.log(files[0]);
         for (let file of files) {
           let cloudFileName = `file/siteId/${new Date().getTime()}-${file.name}`;
           fileNameArray.push(cloudFileName);
@@ -62,11 +56,11 @@ export async function fileUpload(all_files) {
         }
       }
     } catch (e) {
-      console.log(`Error: ${e}`);
+      alert(`Error: ${e}`);
     }
-    return {articleThumb, fileNameArray};
+    return { thumb, fileNameArray };
   }
-
+  return {};
 }
 
 async function commonUploadFile(file, cloudFileName) {
@@ -81,15 +75,7 @@ async function commonUploadFile(file, cloudFileName) {
       params: {},
     };
     let key = file.name;
-    let next = (response) => {
-      let total = response.total;
-      console.log(total.percnt);
-    };
-    let observable = qiniu.upload(file, key, token, putExtra, config);
-    observable.subscribe(next, (error) => console.log(error), (complete) => {
-      console.log(complete);
-    });
+    qiniu.upload(file, key, token, putExtra, config);
     dispatch(responseFileUpload);
   };
-
 }

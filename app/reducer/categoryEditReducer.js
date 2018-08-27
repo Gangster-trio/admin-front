@@ -1,21 +1,21 @@
 import { handleActions } from 'redux-actions';
 
-export const articleEditReducer = handleActions(
+export const categoryEditReducer = handleActions(
   {
-    REQUEST_SINGLE_ARTICLE: state => ({
+    REQUEST_SINGLE_CATEGORY: state => ({
       ...state,
       isFetching: true,
     }),
-    RECEIVE_SINGLE_ARTICLE: (state, action) => ({
+    RECEIVE_SINGLE_CATEGORY: (state, action) => ({
       ...state,
       isFetching: false,
       data: action.payload,
     }),
-    REQUEST_UPDATE_ARTICLE: state => ({
+    REQUEST_UPDATE_CATEGORY: state => ({
       ...state,
       isUpdating: true,
     }),
-    RECEIVE_UPDATE_ARTICLE: (state, action) => ({
+    RECEIVE_UPDATE_CATEGORY: (state, action) => ({
       ...state,
       isUpdating: false,
       callbackMessage: action.payload,

@@ -1,30 +1,30 @@
-import {createAction} from 'redux-actions';
-import {ACCESS_TOKEN, ARTICLE_URL} from '../util/data';
-import {fileUpload} from './fileUploadAction';
-import {fetchSingleCategory} from './categoryGetAction';
-import {fetchCategoryTree} from './categoryList';
+import { createAction } from 'redux-actions';
+import { ACCESS_TOKEN, ARTICLE_URL } from '../util/data';
+import { fileUpload } from './fileUploadAction';
+import { fetchSingleCategory } from './categoryGetAction';
+import { fetchCategoryTree } from './categoryTree';
 
 const requestSingleArticle = createAction('REQUEST_SINGLE_ARTICLE');
 const receiveSingleArticle = createAction('RECEIVE_SINGLE_ARTICLE');
 const requestUpdateArticle = createAction('REQUEST_UPDATE_ARTICLE');
-const responseUpdateArticle = createAction('RESPONSE_UPDATE_ARTICLE');
+const responseUpdateArticle = createAction('RECEIVE_UPDATE_ARTICLE');
+
 export const fetchSingleArticle = articleId => {
   return fetch(`${ARTICLE_URL}/${articleId}`, {
     headers: new Headers({
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)
-    })
+      Authorization: 'Bearer ' + localStorage.getItem(ACCESS_TOKEN),
+    }),
   })
     .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('请求错误:' + response.status);
+      if (response.ok) {
+        return response.json();
       }
-    )
-    .then(article => (article))
+      throw new Error('请求错误:' + response.status);
+    })
+    .then(article => article)
     .catch(e => {
-      console.error(`请求错误: ${e}`);
+      alert(e);
     });
 };
 
@@ -35,16 +35,15 @@ export function getSingleArticle(articleId) {
       const data = await fetchSingleArticle(articleId);
       dispatch(receiveSingleArticle(data));
     } catch (e) {
-      console.log(e);
+      alert(e);
     }
   };
 }
 
 export async function updateArticleData(data) {
-  const {article, all_files} = data;
-  console.log(article, all_files);
+  const { article, all_files } = data;
   //  首先上传文件
-  const {articleThumb, fileNameArray} = await fileUpload(all_files);
+  const { articleThumb, fileNameArray } = await fileUpload(all_files);
   if (articleThumb !== '') {
     article.articleThumb = articleThumb;
   }
@@ -56,32 +55,28 @@ export async function updateArticleData(data) {
   return fetch(`${ARTICLE_URL}`, {
     headers: new Headers({
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)
+      Authorization: 'Bearer ' + localStorage.getItem(ACCESS_TOKEN),
     }),
     method: 'PUT',
-    body: JSON.stringify(
-      article
-      // 'fileNames': fileNameArray
-    )
-  })
-    .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('请求错误:' + response.status);
-      }
-    );
+    body: JSON.stringify({
+      article: article,
+      fileNames: fileNameArray,
+    }),
+  }).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error('请求错误:' + response.status);
+  });
 }
 
 export function updateArticle(data) {
   return async dispatch => {
     dispatch(requestUpdateArticle);
     const msg = await updateArticleData(data);
-    console.log(msg);
     dispatch(responseUpdateArticle(msg));
   };
 }
-
 
 export function fetchUpdateArticleInfo(articleId) {
   return async dispatch => {
@@ -90,6 +85,6 @@ export function fetchUpdateArticleInfo(articleId) {
     const categoryId = article.articleCategoryId;
     const category = await fetchSingleCategory(categoryId);
     const categoryTree = await fetchCategoryTree();
-    dispatch(receiveSingleArticle({article, category, categoryTree}));
+    dispatch(receiveSingleArticle({ article, category, categoryTree }));
   };
 }

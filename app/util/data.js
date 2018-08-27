@@ -1,28 +1,46 @@
 export const article_type_data = [
   {
-    label: '主页文章'
-  }, {
-    label: '轮播图'
-  }, {
-    label: '普通文章'
-  }
+    label: '主页文章',
+  },
+  {
+    label: '轮播图',
+  },
+  {
+    label: '普通文章',
+  },
 ].map(suggestion => ({
   value: suggestion.label,
-  label: suggestion.label
+  label: suggestion.label,
 }));
 
+export const category_type_data = [
+  {
+    label: '主页栏目',
+  },
+  {
+    label: '轮播图',
+  },
+  {
+    label: '普通栏目',
+  },
+].map(suggestion => ({
+  value: suggestion.label,
+  label: suggestion.label,
+}));
 
 export const skin_data = [
   {
     name: '粉红',
-    id: 1
-  }, {
+    id: 1,
+  },
+  {
     name: '骚紫',
-    id: 2
-  }, {
+    id: 2,
+  },
+  {
     name: '靓蓝',
-    id: 3
-  }
+    id: 3,
+  },
 ];
 
 export const USER_INFO = 'USER_INFO';
@@ -33,7 +51,9 @@ export const ACCESS_TOKEN = 'accessToken';
 
 export const ARTICLE_INDEX = '/article_list';
 
-const URL_PRE = 'http://smy.xkenmon.cn:8080';
+export const CATEGORY_INDEX = '/category_list';
+
+const URL_PRE = 'http://smy.xkenmon.cn:9080';
 
 export const ARTICLE_URL = `${URL_PRE}/article`;
 
@@ -46,3 +66,5 @@ export const HTTP_TOKEN_URL = `${URL_PRE}/qiniu/upToken`;
 export const CATEGORY_TREE_URL = `${URL_PRE}/category/tree`;
 
 export const HTTP_DOMAIN_URL = `${URL_PRE}/qiniu/cdnDomain`;
+
+export const GET_AUTH_SITE = `${URL_PRE}/site/auth`;

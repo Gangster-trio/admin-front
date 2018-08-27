@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { fetchArticlesData, getArticleList } from '../action/articleList';
+import { fetchCategoryListData, getCategoryList } from '../action/categoryList';
 import Table from '../components/Table';
 import Tooltip from '@material-ui/core/Tooltip/Tooltip';
 import Button from '@material-ui/core/Button/Button';
@@ -39,13 +39,13 @@ const styles = theme => ({
   },
 });
 
-class ArticleList extends React.Component {
+class CategoryList extends React.Component {
   static propTypes = {
     isFetching: PropTypes.bool.isRequired,
     header: PropTypes.arrayOf(
       PropTypes.shape({ title: PropTypes.string, field: PropTypes.string }),
     ),
-    articles: PropTypes.arrayOf(PropTypes.object),
+    categoryList: PropTypes.arrayOf(PropTypes.object),
     count: PropTypes.number,
     dispatch: PropTypes.func,
     classes: PropTypes.object,
@@ -56,14 +56,14 @@ class ArticleList extends React.Component {
     this.state = {
       page: 1,
       limit: 10,
-      orderBy: 'articleId',
+      orderBy: 'categoryId',
       order: 'asc',
       reFetching: false,
     };
   }
 
   rePage = (page, limit, order, orderBy) => {
-    return fetchArticlesData(page, limit, order, orderBy).then(v => v.articles);
+    return fetchCategoryListData(page, limit, order, orderBy).then(v => v.categoryList);
   };
 
   toolGenFunc = v => (
@@ -73,39 +73,39 @@ class ArticleList extends React.Component {
         color="primary"
         variant={'contained'}
         component={Link}
-        to={`/article_edit/${v['articleId']}`}
+        to={`/category_edit/${v['categoryId']}`}
       >
         <Typography>编辑</Typography>
       </Button>
-      {v['articleStatus'] === '审核中' && (
+      {v['categoryStatus'] === '审核中' && (
         <Button
           className={this.props.classes.tool_button}
           component={Link}
           variant={'contained'}
           color="secondary"
-          to={`/article_check?id=${v['articleId']}`}
+          to={`/category_check?id=${v['categoryId']}`}
         >
           <Typography>过审</Typography>
         </Button>
       )}
-      {v['articleStatus'] === '未通过' && (
+      {v['categoryStatus'] === '未通过' && (
         <Button
           className={this.props.classes.tool_button}
           component={Link}
           variant={'contained'}
           color="secondary"
-          to={`/article_publish?id=${v['articleId']}`}
+          to={`/category_publish?id=${v['categoryId']}`}
         >
           <Typography>发布</Typography>
         </Button>
       )}
-      {v['articleStatus'] === '已通过' && (
+      {v['categoryStatus'] === '已通过' && (
         <Button
           className={this.props.classes.tool_button}
           component={Link}
           variant={'contained'}
           color="secondary"
-          to={`/article_unPublish?id=${v['articleId']}`}
+          to={`/category_unPublish?id=${v['categoryId']}`}
         >
           <Typography>撤回</Typography>
         </Button>
@@ -117,7 +117,7 @@ class ArticleList extends React.Component {
     <Tooltip title="Add">
       <Button
         component={Link}
-        to="/article_create"
+        to="/category_create"
         variant="fab"
         color="secondary"
         aria-label="Add"
@@ -138,11 +138,11 @@ class ArticleList extends React.Component {
   componentDidMount() {
     const dispatch = this.props.dispatch;
     const { page, limit, order, orderBy } = this.state;
-    dispatch(getArticleList(page, limit, order, orderBy));
+    dispatch(getCategoryList(page, limit, order, orderBy));
   }
 
   render() {
-    const { isFetching, articles, header, classes } = this.props;
+    const { isFetching, categoryList, header, classes } = this.props;
     if (isFetching) {
       return <LinearProgress color="secondary" />;
     }
@@ -152,14 +152,14 @@ class ArticleList extends React.Component {
         <Paper className={classes.root}>
           {this.state.reFetching ? <LinearProgress color="secondary" /> : null}
           <Table
-            id="articleId"
-            data={articles}
+            id="categoryId"
+            data={categoryList}
             header={header}
             orderBy={this.state.orderBy}
             count={this.props.count}
             rowsPerPage={this.state.limit}
             rowsPerPageOptions={[5, 10, 20]}
-            title="文章列表"
+            title="栏目列表"
             pageCallback={this.rePage}
             pageBase={1}
             toolGen={this.toolGenFunc}
@@ -173,10 +173,10 @@ class ArticleList extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  isFetching: state.articleList.isFetching,
-  articles: state.articleList.data.articles,
-  header: state.articleList.data.header,
-  count: state.articleList.data.count,
+  isFetching: state.categoryList.isFetching,
+  categoryList: state.categoryList.data.categoryList,
+  header: state.categoryList.data.header,
+  count: state.categoryList.data.count,
 });
 
-export default withStyles(styles)(connect(mapStateToProps)(ArticleList));
+export default withStyles(styles)(connect(mapStateToProps)(CategoryList));

@@ -1,16 +1,13 @@
-import {ACCESS_TOKEN, IS_LOGINED, FETCH_LOGIN_TOKEN_URL, USER_INFO} from '../util/data';
+import { ACCESS_TOKEN, IS_LOGINED, FETCH_LOGIN_TOKEN_URL, USER_INFO } from '../util/data';
 
-
-export const getToken = (userInfo) => {
-
-  console.log(userInfo);
+export const getToken = userInfo => {
   const headers = new Headers({
     'Content-Type': 'application/json',
   });
   return fetch(FETCH_LOGIN_TOKEN_URL, {
     method: 'POST',
     body: JSON.stringify(userInfo),
-    headers: headers
+    headers: headers,
   })
     .then(res => {
       return res.json();
@@ -26,9 +23,8 @@ export const getToken = (userInfo) => {
         window.sessionStorage[IS_LOGINED] = true;
         localStorage.setItem(ACCESS_TOKEN, accessToken);
       }
-      return {code: json.code, data: json.msg};
-    })
-    ;
+      return { code: json.code, data: json.msg };
+    });
 };
 
 export const logout = () => {

@@ -1,10 +1,13 @@
-import {combineReducers} from 'redux';
-import {articleListReducer} from './articleListReducer';
-import {articleEditReducer} from './articleEditReducer';
-import {categoryTreeReducer} from './categoryTreeReducer';
-import {fileUplaodReducer} from './fileUploadReducer';
-import {articleAddReducer} from './articleAddReducer';
-import {categoryGetReducer} from './categoryGetReducer';
+import { combineReducers } from 'redux';
+import { articleListReducer } from './articleListReducer';
+import { articleEditReducer } from './articleEditReducer';
+import { categoryAddReducer } from './categoryAddReducer';
+import { categoryEditReducer } from './categoryEditReducer';
+import { categoryListReducer } from './categoryListReducer';
+import { categoryTreeReducer } from './categoryTreeReducer';
+import { fileUplaodReducer } from './fileUploadReducer';
+import { articleAddReducer } from './articleAddReducer';
+import { categoryGetReducer } from './categoryGetReducer';
 
 export const rootReducer = combineReducers({
   articleList: articleListReducer,
@@ -12,5 +15,8 @@ export const rootReducer = combineReducers({
   categoryTreeList: categoryTreeReducer,
   fileUpload: fileUplaodReducer,
   articleAdd: articleAddReducer,
-  categoryGet: categoryGetReducer
+  categoryAdd: categoryAddReducer,
+  categoryGet: categoryGetReducer,
+  categoryList: categoryListReducer,
+  categoryEdit: categoryEditReducer,
 });
